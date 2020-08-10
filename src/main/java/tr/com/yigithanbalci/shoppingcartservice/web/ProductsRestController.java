@@ -19,31 +19,31 @@ public class ProductsRestController {
 
   @PostMapping("/drinks")
   public ResponseEntity createDrink(@RequestBody String drink){
-
+    return ResponseEntity.ok().build();
   }
 
   @PostMapping("/toppings")
   public ResponseEntity createTopping(@RequestBody String topping){
-
+    return ResponseEntity.ok().build();
   }
 
   @PutMapping("/drinks/{drinkId}")
   public ResponseEntity updateDrink(@RequestBody String drink, @PathVariable("drinkId") String drinkId){
-
+    return ResponseEntity.ok().build();
   }
 
   @PutMapping("/toppings/{toppingId}")
   public ResponseEntity updateTopping(@RequestBody String topping, @PathVariable("toppingId") String toppingId){
-
+    return ResponseEntity.ok().build();
   }
 
   @DeleteMapping("/drinks/{drinkId}")
   public ResponseEntity deleteDrink(@PathVariable("drinkId") String drinkId){
-
+    return ResponseEntity.ok().build();
   }
 
   @DeleteMapping("/toppings/{toppingId}")
   public ResponseEntity deleteTopping(@PathVariable("toppingId") String toppingId){
-
+    return ResponseEntity.ok().build();
   }
 }

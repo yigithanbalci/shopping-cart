@@ -2,9 +2,9 @@ package tr.com.yigithanbalci.shoppingcartservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
+import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
 
 @Repository
-public interface ToppingRepository extends JpaRepository<Topping, Long> {
+public interface ToppingRepository extends JpaRepository<ToppingEntity, Long> {
 
 }

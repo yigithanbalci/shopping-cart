@@ -18,17 +18,17 @@ public class ShoppingCartRestController {
 
   @PutMapping("/{userId}/cart")
   public ResponseEntity addItemToCart(@RequestBody String item, @PathVariable("userId") String userId){
-
+    return ResponseEntity.ok().build();
   }
 
   @DeleteMapping("/{userId}/cart")
   public ResponseEntity deleteItemFromCart(@RequestBody String item, @PathVariable("userId") String userId){
-
+    return ResponseEntity.ok().build();
   }
 
   @PutMapping("/{userId}/cart/checkout")
   public ResponseEntity checkoutShoppingCart(@PathVariable("userId") String userId){
-
+    return ResponseEntity.ok().build();
   }
 
 }

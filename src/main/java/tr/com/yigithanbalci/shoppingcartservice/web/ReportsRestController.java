@@ -16,11 +16,11 @@ public class ReportsRestController {
 
   @GetMapping("/users/{userId}/total-orders")
   public ResponseEntity getTotalOrderByUser(@PathVariable("userId") String userId){
-
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping("/drinks/{drinkId}/most-used-topping")
   public ResponseEntity getMostUsedToppingsForDrinks(@PathVariable("drinkId") String drinkId){
-
+    return ResponseEntity.ok().build();
   }
 }

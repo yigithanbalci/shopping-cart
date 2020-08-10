@@ -3,6 +3,7 @@ package tr.com.yigithanbalci.shoppingcartservice.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @Entity
 @Table
 @NoArgsConstructor
+@AllArgsConstructor
 public class DrinkEntity implements Serializable {
 
   @Id

@@ -1,4 +1,4 @@
-package tr.com.yigithanbalci.shoppingcartservice.model;
+package tr.com.yigithanbalci.shoppingcartservice.dto;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -31,4 +31,7 @@ public class User implements Serializable {
 
     @Column
     private boolean enabled;
+
+    @Column
+    private Long orders;
 }

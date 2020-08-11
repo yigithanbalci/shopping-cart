@@ -1,14 +1,10 @@
 package tr.com.yigithanbalci.shoppingcartservice.model;
 
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -21,19 +17,22 @@ import lombok.Setter;
 @Setter
 @Builder
 @Entity
-@Table(name = "Customers")
+@Table(name = "DrinkToppingRelations")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Customer implements Serializable {
+public class DrinkToppingRelation {
+
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customerSeqGen")
-  @SequenceGenerator(name = "customerSeqGen", sequenceName = "customer_sequence")
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "drinkRelationSeqGen")
+  @SequenceGenerator(name = "drinkRelationSeqGen", sequenceName = "drinkRelation_sequence")
   private Long id;
 
-  @OneToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+  @Column
+  private Long drinkId;
 
   @Column
-  private Long totalOrders;
+  private Long toppingId;
+
+  @Column
+  private Long amount;
 }

@@ -11,6 +11,7 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Item;
 import tr.com.yigithanbalci.shoppingcartservice.repository.CartRepository;
+import tr.com.yigithanbalci.shoppingcartservice.repository.CustomerRepository;
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 
 @Slf4j
@@ -19,14 +20,17 @@ import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 public class ShoppingServiceImpl implements ShoppingService {
 
   @NonNull
-  private final CartRepository repository;
+  private final CartRepository cartRepository;
+
+  @NonNull
+  private final CustomerRepository customerRepository;
 
   @Override
   public Cart addItemToCart(Item item, Long userId) {
     log.info("Started to add item to cart of user with id: " + userId);
-    Cart cart = repository.findByUserId(userId);
+    Cart cart = cartRepository.findByUserId(userId);
     cart.addItem(item);
-    repository.updateByUserId(cart, userId);
+    cartRepository.updateByUserId(cart, userId);
     log.info("Finished to add item to cart of user with id: " + userId);
     return cart;
   }
@@ -34,9 +38,9 @@ public class ShoppingServiceImpl implements ShoppingService {
   @Override
   public Cart deleteItemFromCart(Item item, Long userId) {
     log.info("Started to delete item to cart of user with id: " + userId);
-    Cart cart = repository.findByUserId(userId);
+    Cart cart = cartRepository.findByUserId(userId);
     cart.deleteItem(item);
-    repository.updateByUserId(cart, userId);
+    cartRepository.updateByUserId(cart, userId);
     log.info("Finished to delete item to cart of user with id: " + userId);
     return cart;
   }
@@ -44,8 +48,8 @@ public class ShoppingServiceImpl implements ShoppingService {
   @Override
   public FinalizedCart checkoutCart(Long userId) {
     log.info("Started to checkout cart of user with id: " + userId);
-    Cart cart = repository.findByUserId(userId);
-    repository.deleteByUserId(userId);
+    Cart cart = cartRepository.findByUserId(userId);
+    cartRepository.deleteByUserId(userId);
     FinalizedCart finalizedCart = FinalizedCart.builder().originalAmount(cart.getAmount())
         .discountedAmount(calculateDiscountedAmount(cart)).build();
     log.info("Finished to checkout cart of user with id: " + userId);

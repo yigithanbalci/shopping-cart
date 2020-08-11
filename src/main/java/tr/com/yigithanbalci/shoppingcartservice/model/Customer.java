@@ -1,13 +1,12 @@
 package tr.com.yigithanbalci.shoppingcartservice.model;
 
 import java.io.Serializable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -21,33 +20,17 @@ import lombok.Setter;
 @Setter
 @Builder
 @Entity
-@Table(name = "users")
+@Table(name = "Customers")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
-
+public class Customer implements Serializable {
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userSeqGen")
-  @SequenceGenerator(name = "userSeqGen", sequenceName = "user_sequence")
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customerSeqGen")
+  @SequenceGenerator(name = "customerSeqGen", sequenceName = "customer_sequence")
   private long id;
 
-  @Column
-  private String username;
+  @OneToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-  @Column
-  private String password;
-
-  @Column
-  private String role;
-
-  @Column
-  private boolean enabled;
-
-  @Column
-  private Long orders;
-
-  @OneToOne(mappedBy = "user",
-      fetch = FetchType.LAZY,
-      cascade = CascadeType.ALL)
-  private Customer customer;
 }

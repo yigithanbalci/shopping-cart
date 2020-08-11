@@ -1,6 +1,7 @@
 package tr.com.yigithanbalci.shoppingcartservice.web;
 
 import java.security.Principal;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tr.com.yigithanbalci.shoppingcartservice.auth.UserDetailsImpl;
 import tr.com.yigithanbalci.shoppingcartservice.exception.AuthorizationException;
+import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 
 @Slf4j
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class ShoppingCartRestController {
+
+  @NonNull ShoppingService shoppingService;
 
   @PutMapping("/{userId}/cart")
   public ResponseEntity addItemToCart(Principal principal, @RequestBody String item,

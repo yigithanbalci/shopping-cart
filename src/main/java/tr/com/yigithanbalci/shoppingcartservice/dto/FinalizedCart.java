@@ -1,21 +1,19 @@
 package tr.com.yigithanbalci.shoppingcartservice.dto;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Cart {
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class FinalizedCart {
 
-  private List<Item> items = new ArrayList<>();
-  private Long amount;
-
-  public void addItem(Item item){
-    items.add(item);
-  }
+  private Long originalAmount;
+  private Long discountedAmount;
 }

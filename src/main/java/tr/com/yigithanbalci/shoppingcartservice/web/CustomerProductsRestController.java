@@ -4,23 +4,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/admin/reports")
+@RequestMapping("/products")
 @RequiredArgsConstructor
-public class ReportsRestController {
+public class CustomerProductsRestController {
 
-  @GetMapping("/users/{userId}/total-orders")
-  public ResponseEntity getTotalOrderByUser(@PathVariable("userId") String userId){
+  @GetMapping("/toppings")
+  public ResponseEntity getAllToppings(){
     return ResponseEntity.ok().build();
   }
 
-  @GetMapping("/drinks/{drinkId}/most-used-topping")
-  public ResponseEntity getMostUsedToppingsForDrinks(@PathVariable("drinkId") String drinkId){
+  @GetMapping("/drinks")
+  public ResponseEntity getAllDrinks(){
     return ResponseEntity.ok().build();
   }
 }

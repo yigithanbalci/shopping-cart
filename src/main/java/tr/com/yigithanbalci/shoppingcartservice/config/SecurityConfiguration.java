@@ -40,8 +40,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests().antMatchers("/reports/**").hasAuthority("ADMIN")
-        .antMatchers("/products/**").hasAuthority("ADMIN").anyRequest().authenticated();
+    http.authorizeRequests().antMatchers("/admin/**").hasAuthority("ADMIN").anyRequest()
+        .authenticated();
     http.httpBasic();
   }
 }

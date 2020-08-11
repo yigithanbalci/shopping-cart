@@ -2,6 +2,7 @@ package tr.com.yigithanbalci.shoppingcartservice.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
@@ -19,5 +20,23 @@ public class Item {
 
   public void addTopping(Topping topping) {
     toppings.add(topping);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Item item = (Item) o;
+    return drink.equals(item.drink) &&
+        Objects.equals(toppings, item.toppings);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(drink, toppings);
   }
 }

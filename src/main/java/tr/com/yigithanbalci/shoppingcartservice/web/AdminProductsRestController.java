@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/admin/products")
 @RequiredArgsConstructor
-public class ProductsRestController {
+public class AdminProductsRestController {
 
   @PostMapping("/drinks")
   public ResponseEntity createDrink(@RequestBody String drink){

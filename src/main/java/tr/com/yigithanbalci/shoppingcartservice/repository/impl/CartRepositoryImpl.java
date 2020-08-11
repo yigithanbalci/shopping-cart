@@ -13,11 +13,16 @@ public class CartRepositoryImpl implements CartRepository {
 
   @Override
   public Cart findByUserId(Long userId) {
-    return null;
+    return inMemoryCartMap.get(userId);
   }
 
   @Override
-  public Cart updateByUserId(Cart cart, Long userId) {
-    return null;
+  public void updateByUserId(Cart cart, Long userId) {
+    inMemoryCartMap.put(userId, cart);
+  }
+
+  @Override
+  public void deleteByUserId(Long userId) {
+    inMemoryCartMap.remove(userId);
   }
 }

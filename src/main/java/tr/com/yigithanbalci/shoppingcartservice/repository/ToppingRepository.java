@@ -7,4 +7,5 @@ import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
 @Repository
 public interface ToppingRepository extends JpaRepository<ToppingEntity, Long> {
 
+  ToppingEntity findByNameEquals(String name);
 }

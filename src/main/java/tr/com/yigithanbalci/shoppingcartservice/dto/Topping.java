@@ -1,5 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.dto;
 
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,4 +17,22 @@ public class Topping {
 
   private String name;
   private Float price;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Topping topping = (Topping) o;
+    return name.equals(topping.name) &&
+        price.equals(topping.price);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, price);
+  }
 }

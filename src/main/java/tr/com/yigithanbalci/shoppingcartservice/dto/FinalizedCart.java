@@ -14,6 +14,6 @@ import lombok.Setter;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class FinalizedCart {
 
-  private Long originalAmount;
-  private Long discountedAmount;
+  private Float originalAmount;
+  private Float discountedAmount;
 }

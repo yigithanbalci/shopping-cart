@@ -17,9 +17,11 @@ public class Item {
   @NonNull
   private final Drink drink;
   private List<Topping> toppings = new ArrayList<>();
+  private Float amount = 0f;
 
   public void addTopping(Topping topping) {
     toppings.add(topping);
+    amount = amount + topping.getPrice();
   }
 
   @Override

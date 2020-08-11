@@ -9,5 +9,5 @@ public interface ToppingService {
   void createTopping(ToppingEntity toppingEntity);
   void updateTopping(ToppingEntity toppingEntity);
   void deleteTopping(ToppingEntity toppingEntity);
-  List<Topping> findAll();
+  List<ToppingEntity> findAll();
 }

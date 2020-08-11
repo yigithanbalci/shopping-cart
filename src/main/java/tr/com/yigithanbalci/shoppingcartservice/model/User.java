@@ -29,7 +29,7 @@ public class User implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userSeqGen")
   @SequenceGenerator(name = "userSeqGen", sequenceName = "user_sequence")
-  private long id;
+  private Long id;
 
   @Column
   private String username;

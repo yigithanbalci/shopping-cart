@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
@@ -17,16 +18,19 @@ public class DrinkServiceImpl implements DrinkService {
 
   @NonNull private final DrinkRepository repository;
 
+  @PreAuthorize("hasAuthority('ADMIN')")
   @Override
   public void createDrink(DrinkEntity drinkEntity) {
 
   }
 
+  @PreAuthorize("hasAuthority('ADMIN')")
   @Override
   public void updateDrink(DrinkEntity drinkEntity) {
 
   }
 
+  @PreAuthorize("hasAuthority('ADMIN')")
   @Override
   public void deleteDrink(DrinkEntity drinkEntity) {
 

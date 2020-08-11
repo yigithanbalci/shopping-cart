@@ -20,7 +20,7 @@ public class ReportsRestController {
 
   @GetMapping("/users/{userId}/total-orders")
   public ResponseEntity getTotalOrderByUser(@PathVariable("userId") String userId){
-
+    service.customerAnalysisReport();
     return ResponseEntity.ok().build();
   }
 

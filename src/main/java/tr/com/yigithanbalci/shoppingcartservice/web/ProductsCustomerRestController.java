@@ -26,6 +26,7 @@ public class ProductsCustomerRestController {
 
   @GetMapping("/drinks")
   public ResponseEntity getAllDrinks(){
+    drinkService.findAll();
     return ResponseEntity.ok().build();
   }
 }

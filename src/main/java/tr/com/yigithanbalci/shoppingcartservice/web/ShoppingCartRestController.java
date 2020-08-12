@@ -30,7 +30,7 @@ public class ShoppingCartRestController {
   @NonNull ShoppingService shoppingService;
 
   @PutMapping("/{userId}/cart")
-  public ResponseEntity addItemToCart(Principal principal, @RequestBody Item item,
+  public ResponseEntity<Cart> addItemToCart(Principal principal, @RequestBody Item item,
       @PathVariable("userId") Long userId) {
     try {
       checkAuthentication(principal, userId);
@@ -46,7 +46,7 @@ public class ShoppingCartRestController {
   }
 
   @DeleteMapping("/{userId}/cart")
-  public ResponseEntity deleteItemFromCart(Principal principal, @RequestBody Item item,
+  public ResponseEntity<Cart> deleteItemFromCart(Principal principal, @RequestBody Item item,
       @PathVariable("userId") Long userId) {
     try {
       checkAuthentication(principal, userId);
@@ -62,7 +62,7 @@ public class ShoppingCartRestController {
   }
 
   @PutMapping("/{userId}/cart/checkout")
-  public ResponseEntity checkoutShoppingCart(Principal principal, @PathVariable("userId") Long userId) {
+  public ResponseEntity<FinalizedCart> checkoutShoppingCart(Principal principal, @PathVariable("userId") Long userId) {
     try {
       checkAuthentication(principal, userId);
       FinalizedCart finalizedCart = shoppingService.checkoutCart(userId);

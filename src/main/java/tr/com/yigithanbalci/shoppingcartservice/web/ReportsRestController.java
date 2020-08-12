@@ -22,7 +22,7 @@ public class ReportsRestController {
   @NonNull private final ReportService service;
 
   @GetMapping("/users/total-orders")
-  public ResponseEntity getTotalOrderByUser(){
+  public ResponseEntity<List<CustomerAnalysis>> getTotalOrderByUser(){
     try {
       List<CustomerAnalysis> customerAnalysis = service.customerAnalysisReport();
       return ResponseEntity.ok(customerAnalysis);
@@ -33,7 +33,7 @@ public class ReportsRestController {
   }
 
   @GetMapping("/drinks/most-used-topping")
-  public ResponseEntity getMostUsedToppingsForDrinks(){
+  public ResponseEntity<List<DrinkAndMostUsedTopping>> getMostUsedToppingsForDrinks(){
     try {
       List<DrinkAndMostUsedTopping> drinkAnalysis = service.drinkAnalysisReport();
       return ResponseEntity.ok(drinkAnalysis);

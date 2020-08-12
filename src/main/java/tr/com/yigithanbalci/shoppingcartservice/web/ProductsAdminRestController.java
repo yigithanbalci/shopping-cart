@@ -33,7 +33,7 @@ public class ProductsAdminRestController {
   private final ToppingService toppingService;
 
   @PostMapping("/drinks")
-  public ResponseEntity createDrink(@RequestBody Drink drink) {
+  public ResponseEntity<DrinkEntity> createDrink(@RequestBody Drink drink) {
     try {
       DrinkEntity drinkEntity = drinkService.createDrink(DrinkEntity.from(drink));
       return ResponseEntity.ok(drinkEntity);
@@ -44,7 +44,7 @@ public class ProductsAdminRestController {
   }
 
   @PostMapping("/toppings")
-  public ResponseEntity createTopping(@RequestBody Topping topping) {
+  public ResponseEntity<ToppingEntity> createTopping(@RequestBody Topping topping) {
     try {
       ToppingEntity toppingEntity = toppingService.createTopping(ToppingEntity.from(topping));
       return ResponseEntity.ok(toppingEntity);
@@ -55,7 +55,7 @@ public class ProductsAdminRestController {
   }
 
   @PutMapping("/drinks/{drinkId}")
-  public ResponseEntity updateDrink(@RequestBody Drink drink,
+  public ResponseEntity<DrinkEntity> updateDrink(@RequestBody Drink drink,
       @PathVariable("drinkId") Long drinkId) {
     try {
       DrinkEntity drinkEntity = DrinkEntity.from(drink);
@@ -72,7 +72,7 @@ public class ProductsAdminRestController {
   }
 
   @PutMapping("/toppings/{toppingId}")
-  public ResponseEntity updateTopping(@RequestBody Topping topping,
+  public ResponseEntity<ToppingEntity> updateTopping(@RequestBody Topping topping,
       @PathVariable("toppingId") Long toppingId) {
     try {
       ToppingEntity toppingEntity = ToppingEntity.from(topping);
@@ -89,7 +89,7 @@ public class ProductsAdminRestController {
   }
 
   @DeleteMapping("/drinks/{drinkId}")
-  public ResponseEntity deleteDrink(@PathVariable("drinkId") Long drinkId) {
+  public ResponseEntity<Void> deleteDrink(@PathVariable("drinkId") Long drinkId) {
     try {
       drinkService.deleteDrink(drinkId);
     } catch (Exception e) {
@@ -100,7 +100,7 @@ public class ProductsAdminRestController {
   }
 
   @DeleteMapping("/toppings/{toppingId}")
-  public ResponseEntity deleteTopping(@PathVariable("toppingId") Long toppingId) {
+  public ResponseEntity<Void> deleteTopping(@PathVariable("toppingId") Long toppingId) {
     try {
       toppingService.deleteTopping(toppingId);
     } catch (Exception e) {

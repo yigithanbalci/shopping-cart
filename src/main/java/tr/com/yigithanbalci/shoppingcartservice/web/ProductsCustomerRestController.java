@@ -26,7 +26,7 @@ public class ProductsCustomerRestController {
   @NonNull private final ToppingService toppingService;
 
   @GetMapping("/toppings")
-  public ResponseEntity getAllToppings(){
+  public ResponseEntity<List<ToppingEntity>> getAllToppings(){
     try {
       List<ToppingEntity> toppingEntities = toppingService.findAll();
       return ResponseEntity.ok(toppingEntities);
@@ -40,7 +40,7 @@ public class ProductsCustomerRestController {
   }
 
   @GetMapping("/drinks")
-  public ResponseEntity getAllDrinks(){
+  public ResponseEntity<List<DrinkEntity>> getAllDrinks(){
     try {
       List<DrinkEntity> drinkEntities = drinkService.findAll();
       return ResponseEntity.ok(drinkEntities);

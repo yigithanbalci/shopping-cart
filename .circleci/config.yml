@@ -3,19 +3,7 @@ version: 2.1
 orbs:
   maven: circleci/maven@0.0.12
 
-jobs:
-  build:
-    docker:
-      - image: 'circleci/openjdk:8-jdk'
-    steps:
-      - checkout
-      - run:
-          name: Analyze on SonarCloud
-          command: mvn verify sonar:sonar
-
 workflows:
   maven_test:
     jobs:
-      - build:
-          context: SonarCloud
       - maven/test # checkout, build, test, and upload test results

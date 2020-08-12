@@ -1,5 +1,5 @@
 # shopping-cart
-Shopping cart example
+Shopping cart example.
 
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=shopping-cart&metric=coverage)](https://sonarcloud.io/dashboard?id=shopping-cart)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=shopping-cart&metric=alert_status)](https://sonarcloud.io/dashboard?id=shopping-cart)

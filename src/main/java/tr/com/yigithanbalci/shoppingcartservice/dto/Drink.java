@@ -1,5 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Objects;
 import lombok.AccessLevel;
@@ -16,7 +17,8 @@ import lombok.Setter;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Drink implements Serializable {
 
-  private transient Long id;
+  @JsonIgnore
+  private Long id;
   private String name;
   private Float price;
 

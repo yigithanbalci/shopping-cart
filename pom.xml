@@ -8,6 +8,7 @@
 		<version>2.3.2.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>tr.com.yigithanbalci</groupId>
 	<artifactId>shoppingcartservice</artifactId>
 	<version>0.0.1</version>
@@ -24,6 +25,14 @@
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>jcenter</id>
+			<url>http://jcenter.bintray.com/</url>
+		</repository>
+	</repositories>
+
 <!--- comment ekle. -->
 	<dependencies>
 		<dependency>
@@ -95,6 +104,11 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>pl.pojo</groupId>
+			<artifactId>pojo-tester</artifactId>
+			<version>0.7.6</version>
 		</dependency>
 	</dependencies>
 

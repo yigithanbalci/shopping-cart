@@ -17,6 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Drink implements Serializable {
 
+  // TODO: 13.08.2020 dtolar abarti gibi.
   @JsonIgnore
   private Long id;
   private String name;

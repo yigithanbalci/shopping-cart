@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+// TODO: 12.08.2020 @data
+// TODO: 12.08.2020 gereksiz builderlari kaldir
 @Getter
 @Setter
 @Builder

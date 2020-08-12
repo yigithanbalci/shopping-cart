@@ -24,6 +24,7 @@ public class Item implements Serializable {
     amount = amount + drink.getPrice();
   }
 
+  // TODO: 13.08.2020 sil.
   public void setDrink(){
     this.drink = drink;
     amount = amount + drink.getPrice();

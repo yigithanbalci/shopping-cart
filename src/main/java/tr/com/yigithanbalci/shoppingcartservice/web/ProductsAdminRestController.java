@@ -32,8 +32,9 @@ public class ProductsAdminRestController {
   @NonNull
   private final ToppingService toppingService;
 
+  // TODO: 12.08.2020 argumanlari final yap.
   @PostMapping("/drinks")
-  public ResponseEntity<DrinkEntity> createDrink(@RequestBody Drink drink) {
+  public ResponseEntity<DrinkEntity> createDrink(@RequestBody final Drink drink) {
     try {
       DrinkEntity drinkEntity = drinkService.createDrink(DrinkEntity.from(drink));
       return ResponseEntity.ok(drinkEntity);

@@ -8,4 +8,5 @@ import tr.com.yigithanbalci.shoppingcartservice.model.DrinkToppingRelation;
 public interface DrinkToppingRelationRepository extends JpaRepository<DrinkToppingRelation, Long> {
 
   DrinkToppingRelation findTopByDrinkIdEqualsOrderByAmountDesc(Long drinkId);
+  DrinkToppingRelation findByDrinkIdEqualsAndToppingIdEquals(Long drinkId, Long toppingId);
 }

@@ -1,15 +1,22 @@
 package tr.com.yigithanbalci.shoppingcartservice.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Drink {
+public class Drink implements Serializable {
 
+  private transient Long id;
   private String name;
   private Float price;
 

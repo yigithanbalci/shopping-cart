@@ -13,8 +13,8 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class CustomerAnalysis implements Serializable {
+public class DrinkAndMostUsedTopping implements Serializable {
 
-  private String username;
-  private Long totalAmountOfOrders;
+  private String drink;
+  private String mostUsedTopping;
 }

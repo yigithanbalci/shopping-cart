@@ -13,7 +13,12 @@ public class CartRepositoryImpl implements CartRepository {
 
   @Override
   public Cart findByUserId(Long userId) {
-    return inMemoryCartMap.get(userId);
+    Cart cart = inMemoryCartMap.get(userId);
+    if(cart == null){
+      cart = new Cart();
+      inMemoryCartMap.put(userId, cart);
+    }
+    return cart;
   }
 
   @Override

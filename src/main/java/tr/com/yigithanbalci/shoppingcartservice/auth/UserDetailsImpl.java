@@ -2,6 +2,7 @@ package tr.com.yigithanbalci.shoppingcartservice.auth;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,7 +30,7 @@ public class UserDetailsImpl implements UserDetails {
     return user.getUsername();
   }
 
-  public Long getUserId(){
+  public Long getUserId() {
     return user.getId();
   }
 
@@ -51,5 +52,29 @@ public class UserDetailsImpl implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    UserDetailsImpl that = (UserDetailsImpl) o;
+    return user.equals(that.user);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(user);
+  }
+
+  @Override
+  public String toString() {
+    return "UserDetailsImpl{" +
+        "user=" + user +
+        '}';
   }
 }

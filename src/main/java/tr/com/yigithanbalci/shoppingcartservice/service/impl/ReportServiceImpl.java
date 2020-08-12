@@ -1,5 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -7,9 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import tr.com.yigithanbalci.shoppingcartservice.dto.report.CustomerAnalysis;
-import tr.com.yigithanbalci.shoppingcartservice.dto.report.CustomerAndOrderWrapper;
-import tr.com.yigithanbalci.shoppingcartservice.dto.report.DrinkAnalysis;
-import tr.com.yigithanbalci.shoppingcartservice.dto.report.DrinkAndMostUsedToppingWrapper;
+import tr.com.yigithanbalci.shoppingcartservice.dto.report.DrinkAndMostUsedTopping;
 import tr.com.yigithanbalci.shoppingcartservice.model.Customer;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkToppingRelation;
@@ -39,12 +38,12 @@ public class ReportServiceImpl implements ReportService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public CustomerAnalysis customerAnalysisReport() {
+  public List<CustomerAnalysis> customerAnalysisReport() {
     log.info("Producing Customer Analysis...");
     List<Customer> customers = customerRepository.findAll();
-    CustomerAnalysis customerAnalysis = new CustomerAnalysis();
-    customers.forEach(customer -> customerAnalysis.addCustomerAndOrders(
-        CustomerAndOrderWrapper.builder().username(customer.getUser().getUsername())
+    List<CustomerAnalysis> customerAnalysis = new ArrayList<>();
+    customers.forEach(customer -> customerAnalysis.add(
+        CustomerAnalysis.builder().username(customer.getUser().getUsername())
             .totalAmountOfOrders(customer.getTotalOrders()).build()));
     log.info("Produced Customer Analysis.");
     return customerAnalysis;
@@ -52,16 +51,16 @@ public class ReportServiceImpl implements ReportService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public DrinkAnalysis drinkAnalysisReport() {
+  public List<DrinkAndMostUsedTopping> drinkAnalysisReport() {
     log.info("Producing Drink Analysis...");
     List<DrinkEntity> drinks = drinkRepository.findAll();
 
-    DrinkAnalysis drinkAnalysis = new DrinkAnalysis();
+    List<DrinkAndMostUsedTopping> drinkAnalysis = new ArrayList<>();
     drinks.forEach(drinkEntity -> {
       DrinkToppingRelation topByDrinkIdEqualsOrderByAmount = drinkToppingRelationRepository
           .findTopByDrinkIdEqualsOrderByAmountDesc(drinkEntity.getId());
-      drinkAnalysis.addDrinksAndToppings(
-          DrinkAndMostUsedToppingWrapper.builder().drink(drinkEntity.getName()).mostUsedTopping(
+      drinkAnalysis.add(
+          DrinkAndMostUsedTopping.builder().drink(drinkEntity.getName()).mostUsedTopping(
               toppingRepository.findById(topByDrinkIdEqualsOrderByAmount.getToppingId()).orElse(
                   ToppingEntity.builder().name("none").build()).getName()).build());
     });

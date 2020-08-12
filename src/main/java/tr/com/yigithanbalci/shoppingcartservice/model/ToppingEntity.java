@@ -1,12 +1,18 @@
 package tr.com.yigithanbalci.shoppingcartservice.model;
 
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
-import javax.persistence.*;
-import java.io.Serializable;
+import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
 
 @Data
 @Builder
@@ -25,4 +31,11 @@ public class ToppingEntity implements Serializable {
 
     @Column
     private Float price;
+
+    public static ToppingEntity from(Topping topping){
+        ToppingEntity toppingEntity = new ToppingEntity();
+        toppingEntity.setName(topping.getName());
+        toppingEntity.setPrice(topping.getPrice());
+        return toppingEntity;
+    }
 }

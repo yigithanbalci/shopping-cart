@@ -1,5 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class Cart {
+public class Cart implements Serializable {
 
   private List<Item> items = new ArrayList<>();
   private Float amount = 0.0f;

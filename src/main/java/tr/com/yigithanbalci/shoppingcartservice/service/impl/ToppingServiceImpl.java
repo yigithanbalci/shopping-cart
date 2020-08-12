@@ -20,37 +20,42 @@ public class ToppingServiceImpl implements ToppingService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public void createTopping(ToppingEntity toppingEntity) {
+  public ToppingEntity createTopping(ToppingEntity toppingEntity) {
     log.info("Creating a topping: " + toppingEntity.getName());
     toppingEntity.setId(null);
-    repository.save(toppingEntity);
+    ToppingEntity createdTopping = repository.save(toppingEntity);
     log.info("Created a topping: " + toppingEntity.getName());
+    return createdTopping;
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public void updateTopping(ToppingEntity toppingEntity) {
+  public ToppingEntity updateTopping(ToppingEntity toppingEntity) {
     log.info("Updating a topping: " + toppingEntity.getName());
     ToppingEntity retrieved = repository.findById(toppingEntity.getId())
         .orElseThrow(() -> new ToppingNotFoundException("Topping not found with id: " + toppingEntity.getId()));
     retrieved.setName(toppingEntity.getName());
     retrieved.setPrice(toppingEntity.getPrice());
-    repository.save(toppingEntity);
+    ToppingEntity updatedTopping = repository.save(toppingEntity);
     log.info("Updated a topping: " + toppingEntity.getName());
+    return updatedTopping;
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public void deleteTopping(ToppingEntity toppingEntity) {
-    log.info("Deleting a topping: " + toppingEntity.getName());
-    repository.deleteById(toppingEntity.getId());
-    log.info("Deleted a topping: " + toppingEntity.getName());
+  public void deleteTopping(Long id) {
+    log.info("Deleting a topping: " + id);
+    repository.deleteById(id);
+    log.info("Deleted a topping: " + id);
   }
 
   @Override
   public List<ToppingEntity> findAll() {
     log.info("Retrieving all topping");
     List<ToppingEntity> all = repository.findAll();
+    if (all.isEmpty()){
+      throw new ToppingNotFoundException("Not found any toppings in database.");
+    }
     log.info("Retrieved all topping");
     return all;
   }

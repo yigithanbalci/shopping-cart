@@ -1,10 +1,11 @@
 package tr.com.yigithanbalci.shoppingcartservice.service;
 
+import java.util.List;
 import tr.com.yigithanbalci.shoppingcartservice.dto.report.CustomerAnalysis;
-import tr.com.yigithanbalci.shoppingcartservice.dto.report.DrinkAnalysis;
+import tr.com.yigithanbalci.shoppingcartservice.dto.report.DrinkAndMostUsedTopping;
 
 public interface ReportService {
 
-  CustomerAnalysis customerAnalysisReport();
-  DrinkAnalysis drinkAnalysisReport();
+  List<CustomerAnalysis> customerAnalysisReport();
+  List<DrinkAndMostUsedTopping> drinkAnalysisReport();
 }

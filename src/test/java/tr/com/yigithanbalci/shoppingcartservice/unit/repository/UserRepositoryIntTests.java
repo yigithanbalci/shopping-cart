@@ -1,4 +1,4 @@
-package tr.com.yigithanbalci.shoppingcartservice.repository;
+package tr.com.yigithanbalci.shoppingcartservice.unit.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 import tr.com.yigithanbalci.shoppingcartservice.model.User;
+import tr.com.yigithanbalci.shoppingcartservice.repository.UserRepository;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

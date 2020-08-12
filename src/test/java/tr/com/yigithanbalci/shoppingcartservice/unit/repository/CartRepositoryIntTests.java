@@ -1,4 +1,4 @@
-package tr.com.yigithanbalci.shoppingcartservice.repository;
+package tr.com.yigithanbalci.shoppingcartservice.unit.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,6 +9,7 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Item;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
+import tr.com.yigithanbalci.shoppingcartservice.repository.CartRepository;
 import tr.com.yigithanbalci.shoppingcartservice.repository.impl.CartRepositoryImpl;
 
 @RunWith(SpringRunner.class)
@@ -28,8 +29,8 @@ public class CartRepositoryIntTests {
     assertThat(found).isEqualTo(cart);
 
     cartRepository.deleteByUserId(1L);
-    Cart retreivedToNull = cartRepository.findByUserId(1L);
+    Cart retrieved = cartRepository.findByUserId(1L);
 
-    assertThat(retreivedToNull).isNull();
+    assertThat(retrieved.getItems()).isEmpty();
   }
 }

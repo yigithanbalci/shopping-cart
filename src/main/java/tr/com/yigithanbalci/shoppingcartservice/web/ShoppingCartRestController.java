@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tr.com.yigithanbalci.shoppingcartservice.auth.UserDetailsImpl;
+import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
+import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
+import tr.com.yigithanbalci.shoppingcartservice.dto.Item;
 import tr.com.yigithanbalci.shoppingcartservice.exception.AuthorizationException;
+import tr.com.yigithanbalci.shoppingcartservice.exception.InternalServerException;
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 
 @Slf4j
@@ -25,26 +29,50 @@ public class ShoppingCartRestController {
   @NonNull ShoppingService shoppingService;
 
   @PutMapping("/{userId}/cart")
-  public ResponseEntity addItemToCart(Principal principal, @RequestBody String item,
-      @PathVariable("userId") String userIdStr) {
-    Long userId = Long.parseLong(userIdStr);
-    checkAuthentication(principal, userId);
-    return ResponseEntity.ok().build();
+  public ResponseEntity addItemToCart(Principal principal, @RequestBody Item item,
+      @PathVariable("userId") Long userId) {
+    try {
+      checkAuthentication(principal, userId);
+      Cart cart = shoppingService.addItemToCart(item, userId);
+      return ResponseEntity.ok(cart);
+    } catch (AuthorizationException e){
+      log.error("Authorization error: {} ", e.getLocalizedMessage(), e);
+      throw e;
+    } catch (Exception e) {
+      log.error("Exception occurs while reporting toppings by drink {}", e.getLocalizedMessage(), e);
+      throw new InternalServerException("Toppings by drink could not be reported: " + e.getLocalizedMessage());
+    }
   }
 
   @DeleteMapping("/{userId}/cart")
-  public ResponseEntity deleteItemFromCart(Principal principal, @RequestBody String item,
-      @PathVariable("userId") String userIdStr) {
-    Long userId = Long.parseLong(userIdStr);
-    checkAuthentication(principal, userId);
-    return ResponseEntity.ok().build();
+  public ResponseEntity deleteItemFromCart(Principal principal, @RequestBody Item item,
+      @PathVariable("userId") Long userId) {
+    try {
+      checkAuthentication(principal, userId);
+      Cart cart = shoppingService.deleteItemFromCart(item, userId);
+      return ResponseEntity.ok(cart);
+    } catch (AuthorizationException e){
+      log.error("Authorization error: {} ", e.getLocalizedMessage(), e);
+      throw e;
+    } catch (Exception e) {
+      log.error("Exception occurs while reporting toppings by drink {}", e.getLocalizedMessage(), e);
+      throw new InternalServerException("Toppings by drink could not be reported: " + e.getLocalizedMessage());
+    }
   }
 
   @PutMapping("/{userId}/cart/checkout")
-  public ResponseEntity checkoutShoppingCart(Principal principal, @PathVariable("userId") String userIdStr) {
-    Long userId = Long.parseLong(userIdStr);
-    checkAuthentication(principal, userId);
-    return ResponseEntity.ok().build();
+  public ResponseEntity checkoutShoppingCart(Principal principal, @PathVariable("userId") Long userId) {
+    try {
+      checkAuthentication(principal, userId);
+      FinalizedCart finalizedCart = shoppingService.checkoutCart(userId);
+      return ResponseEntity.ok(finalizedCart);
+    } catch (AuthorizationException e){
+      log.error("Authorization error: {} ", e.getLocalizedMessage(), e);
+      throw e;
+    } catch (Exception e) {
+      log.error("Exception occurs while reporting toppings by drink {}", e.getLocalizedMessage(), e);
+      throw new InternalServerException("Toppings by drink could not be reported: " + e.getLocalizedMessage());
+    }
   }
 
   private void checkAuthentication(Principal principal, Long userId) {

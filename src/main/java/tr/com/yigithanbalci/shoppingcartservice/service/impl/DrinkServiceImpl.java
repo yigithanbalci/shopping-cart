@@ -21,37 +21,42 @@ public class DrinkServiceImpl implements DrinkService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public void createDrink(DrinkEntity drinkEntity) {
+  public DrinkEntity createDrink(DrinkEntity drinkEntity) {
     log.info("Creating a drink: " + drinkEntity.getName());
     drinkEntity.setId(null);
-    repository.save(drinkEntity);
+    DrinkEntity createdDrink = repository.save(drinkEntity);
     log.info("Created a drink: " + drinkEntity.getName());
+    return createdDrink;
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public void updateDrink(DrinkEntity drinkEntity) {
+  public DrinkEntity updateDrink(DrinkEntity drinkEntity) {
     log.info("Updating a drink: " + drinkEntity.getName());
     DrinkEntity retrieved = repository.findById(drinkEntity.getId())
         .orElseThrow(() -> new DrinkNotFoundException("Drink not found with id: " + drinkEntity.getId()));
     retrieved.setName(drinkEntity.getName());
     retrieved.setPrice(drinkEntity.getPrice());
-    repository.save(drinkEntity);
+    DrinkEntity updatedDrink = repository.save(drinkEntity);
     log.info("Updated a drink: " + drinkEntity.getName());
+    return updatedDrink;
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public void deleteDrink(DrinkEntity drinkEntity) {
-    log.info("Deleting a drink: " + drinkEntity.getName());
-    repository.deleteById(drinkEntity.getId());
-    log.info("Deleted a drink: " + drinkEntity.getName());
+  public void deleteDrink(Long id) {
+    log.info("Deleting a drink: " + id);
+    repository.deleteById(id);
+    log.info("Deleted a drink: " + id);
   }
 
   @Override
   public List<DrinkEntity> findAll() {
     log.info("Retrieving all drinks");
     List<DrinkEntity> all = repository.findAll();
+    if (all.isEmpty()){
+      throw new DrinkNotFoundException("Not found any drinks in database.");
+    }
     log.info("Retrieved all drink");
     return all;
   }

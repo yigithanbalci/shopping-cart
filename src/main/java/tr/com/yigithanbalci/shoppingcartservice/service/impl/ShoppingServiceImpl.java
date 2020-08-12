@@ -10,8 +10,9 @@ import org.springframework.stereotype.Service;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Item;
+import tr.com.yigithanbalci.shoppingcartservice.model.DrinkToppingRelation;
 import tr.com.yigithanbalci.shoppingcartservice.repository.CartRepository;
-import tr.com.yigithanbalci.shoppingcartservice.repository.CustomerRepository;
+import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkToppingRelationRepository;
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 
 @Slf4j
@@ -23,7 +24,7 @@ public class ShoppingServiceImpl implements ShoppingService {
   private final CartRepository cartRepository;
 
   @NonNull
-  private final CustomerRepository customerRepository;
+  private final DrinkToppingRelationRepository drinkToppingRelationRepository;
 
   @Override
   public Cart addItemToCart(Item item, Long userId) {
@@ -49,11 +50,27 @@ public class ShoppingServiceImpl implements ShoppingService {
   public FinalizedCart checkoutCart(Long userId) {
     log.info("Started to checkout cart of user with id: " + userId);
     Cart cart = cartRepository.findByUserId(userId);
-    cartRepository.deleteByUserId(userId);
     FinalizedCart finalizedCart = FinalizedCart.builder().originalAmount(cart.getAmount())
         .discountedAmount(calculateDiscountedAmount(cart)).build();
+    cartRepository.deleteByUserId(userId);
+    updateDrinkToppingRelation(cart);
     log.info("Finished to checkout cart of user with id: " + userId);
     return finalizedCart;
+  }
+
+  private void updateDrinkToppingRelation(Cart cart) {
+    cart.getItems().forEach(item -> item.getToppings().forEach(topping -> {
+      DrinkToppingRelation relation = drinkToppingRelationRepository
+          .findByDrinkIdEqualsAndToppingIdEquals(item.getDrink().getId(), topping.getId());
+      if(relation == null){
+        relation = new DrinkToppingRelation();
+        relation.setDrinkId(item.getDrink().getId());
+        relation.setToppingId(topping.getId());
+        relation.setAmount(0L);
+      }
+      relation.setAmount(relation.getAmount() + 1);
+      drinkToppingRelationRepository.save(relation);
+    }));
   }
 
   private float calculateDiscountedAmount(Cart cart) {
@@ -62,8 +79,10 @@ public class ShoppingServiceImpl implements ShoppingService {
     if (cart.getItems().size() >= 3) {
       List<Float> amounts = cart.getItems().stream().map(Item::getAmount)
           .collect(Collectors.toList());
-      amounts.add(discountedAmount);
-      discountedAmount = Collections.min(amounts);
+      float minAmount = Collections.min(amounts);
+      if (cart.getAmount() - minAmount < discountedAmount) {
+        discountedAmount = cart.getAmount() - minAmount;
+      }
     }
     return discountedAmount;
   }

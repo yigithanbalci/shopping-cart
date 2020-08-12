@@ -1,5 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,8 +14,9 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Topping {
+public class Topping implements Serializable {
 
+  private transient Long id;
   private String name;
   private Float price;
 

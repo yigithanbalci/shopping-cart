@@ -5,8 +5,8 @@ import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 
 public interface DrinkService {
 
-  void createDrink(DrinkEntity drinkEntity);
-  void updateDrink(DrinkEntity drinkEntity);
-  void deleteDrink(DrinkEntity drinkEntity);
+  DrinkEntity createDrink(DrinkEntity drinkEntity);
+  DrinkEntity updateDrink(DrinkEntity drinkEntity);
+  void deleteDrink(Long id);
   List<DrinkEntity> findAll();
 }

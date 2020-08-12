@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Item;
+import tr.com.yigithanbalci.shoppingcartservice.exception.CustomerNotFoundException;
+import tr.com.yigithanbalci.shoppingcartservice.model.Customer;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkToppingRelation;
 import tr.com.yigithanbalci.shoppingcartservice.repository.CartRepository;
+import tr.com.yigithanbalci.shoppingcartservice.repository.CustomerRepository;
 import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkToppingRelationRepository;
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 
@@ -22,6 +25,9 @@ public class ShoppingServiceImpl implements ShoppingService {
 
   @NonNull
   private final CartRepository cartRepository;
+
+  @NonNull
+  private final CustomerRepository customerRepository;
 
   @NonNull
   private final DrinkToppingRelationRepository drinkToppingRelationRepository;
@@ -54,6 +60,10 @@ public class ShoppingServiceImpl implements ShoppingService {
         .discountedAmount(calculateDiscountedAmount(cart)).build();
     cartRepository.deleteByUserId(userId);
     updateDrinkToppingRelation(cart);
+    Customer customer = customerRepository.findById(userId)
+        .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + userId));
+    customer.setTotalOrders(customer.getTotalOrders() + 1);
+    customerRepository.save(customer);
     log.info("Finished to checkout cart of user with id: " + userId);
     return finalizedCart;
   }

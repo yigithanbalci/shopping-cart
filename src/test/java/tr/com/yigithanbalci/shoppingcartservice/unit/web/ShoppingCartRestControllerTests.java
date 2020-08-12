@@ -26,6 +26,7 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Item;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
+import tr.com.yigithanbalci.shoppingcartservice.exception.CustomerNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 import tr.com.yigithanbalci.shoppingcartservice.web.ShoppingCartRestController;
 
@@ -215,5 +216,20 @@ public class ShoppingCartRestControllerTests {
         MockMvcRequestBuilders.put("/users/2/cart/checkout")
             .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal))
         .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  public void whenCustomerNotFound_thenNotFound() throws Exception {
+    UsernamePasswordAuthenticationToken mockPrincipal = Mockito.mock(UsernamePasswordAuthenticationToken.class);
+    UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
+    Mockito.when(userDetails.getUserId()).thenReturn(1L);
+    Mockito.when(mockPrincipal.getPrincipal()).thenReturn(userDetails);
+
+    given(shoppingService.checkoutCart(1L)).willThrow(new CustomerNotFoundException("test"));
+
+    mockMvc.perform(
+        MockMvcRequestBuilders.put("/users/1/cart/checkout")
+            .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal))
+        .andExpect(status().isNotFound());
   }
 }

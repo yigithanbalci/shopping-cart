@@ -17,6 +17,7 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Item;
 import tr.com.yigithanbalci.shoppingcartservice.exception.AuthorizationException;
+import tr.com.yigithanbalci.shoppingcartservice.exception.CustomerNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.exception.InternalServerException;
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 
@@ -68,6 +69,9 @@ public class ShoppingCartRestController {
       return ResponseEntity.ok(finalizedCart);
     } catch (AuthorizationException e){
       log.error("Authorization error: {} ", e.getLocalizedMessage(), e);
+      throw e;
+    } catch (CustomerNotFoundException e){
+      log.error("Customer not found with id {}: {} ", userId, e.getLocalizedMessage(), e);
       throw e;
     } catch (Exception e) {
       log.error("Exception occurs while reporting toppings by drink {}", e.getLocalizedMessage(), e);

@@ -1,7 +1,7 @@
 package tr.com.yigithanbalci.shoppingcartservice.auth;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,12 +12,12 @@ import tr.com.yigithanbalci.shoppingcartservice.model.User;
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
-  private User user;
+  private final User user;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
-    return Arrays.asList(authority);
+    return Collections.singletonList(authority);
   }
 
   @Override

@@ -30,7 +30,7 @@ public class ReportServiceImpl implements ReportService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public List<CustomerAnalysis> customerAnalysisReport() {
+  public List<CustomerAnalysis> getCustomerAnalysisReport() {
     log.info("Producing Customer Analysis...");
     List<Customer> customers = customerRepository.findAll();
     List<CustomerAnalysis> customerAnalysis = new ArrayList<>();
@@ -43,7 +43,7 @@ public class ReportServiceImpl implements ReportService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public List<DrinkAndMostUsedTopping> drinkAnalysisReport() {
+  public List<DrinkAndMostUsedTopping> getDrinkAnalysisReport() {
     log.info("Producing Drink Analysis...");
     List<DrinkEntity> drinks = drinkRepository.findAll();
 

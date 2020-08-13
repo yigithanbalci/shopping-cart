@@ -29,8 +29,8 @@ public class ShoppingCartRestController {
   private final ShoppingService shoppingService;
 
   @PutMapping("/{userId}/cart")
-  public ResponseEntity<Cart> addItemToCart(Principal principal, @RequestBody Item item,
-      @PathVariable Long userId) {
+  public ResponseEntity<Cart> addItemToCart(final Principal principal, @RequestBody final Item item,
+      @PathVariable final Long userId) {
     try {
       checkAuthentication(principal, userId);
       Cart cart = shoppingService.addItemToCart(item, userId);
@@ -45,8 +45,8 @@ public class ShoppingCartRestController {
   }
 
   @DeleteMapping("/{userId}/cart")
-  public ResponseEntity<Cart> deleteItemFromCart(Principal principal, @RequestBody Item item,
-      @PathVariable Long userId) {
+  public ResponseEntity<Cart> deleteItemFromCart(final Principal principal, @RequestBody final Item item,
+      @PathVariable final Long userId) {
     try {
       checkAuthentication(principal, userId);
       Cart cart = shoppingService.deleteItemFromCart(item, userId);
@@ -61,7 +61,7 @@ public class ShoppingCartRestController {
   }
 
   @PutMapping("/{userId}/cart/checkout")
-  public ResponseEntity<FinalizedCart> checkoutShoppingCart(Principal principal, @PathVariable Long userId) {
+  public ResponseEntity<FinalizedCart> checkoutShoppingCart(final Principal principal, @PathVariable final Long userId) {
     try {
       checkAuthentication(principal, userId);
       FinalizedCart finalizedCart = shoppingService.checkoutCart(userId);
@@ -78,7 +78,7 @@ public class ShoppingCartRestController {
     }
   }
 
-  private void checkAuthentication(Principal principal, Long userId) {
+  private void checkAuthentication(final Principal principal, final Long userId) {
     Long principalUserId = ((UserDetailsImpl) ((UsernamePasswordAuthenticationToken) principal)
         .getPrincipal()).getUserId();
 

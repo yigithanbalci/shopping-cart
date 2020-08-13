@@ -66,19 +66,19 @@ public class DrinkServiceTests {
     Mockito.when(drinkRepository.findById(5L)).thenReturn(Optional.of(java));
     Mockito.when(drinkRepository.save(java)).thenReturn(java);
 
-    DrinkEntity savedDrink = drinkService.createDrink(java);
+    DrinkEntity savedDrink = drinkService.create(java);
     Mockito.verify(drinkRepository, Mockito.times(1)).save(java);
     assertThat(savedDrink.getName()).isEqualTo(java.getName());
 
     java.setId(5L);
     java.setPrice(5.0f);
     Mockito.when(drinkRepository.save(updatedJava)).thenReturn(updatedJava);
-    DrinkEntity updatedDrink = drinkService.updateDrink(java);
+    DrinkEntity updatedDrink = drinkService.update(java);
     Mockito.verify(drinkRepository, Mockito.times(2)).save(java);
     assertThat(updatedDrink.getPrice()).isEqualTo(updatedJava.getPrice());
 
     java.setId(5L);
-    drinkService.deleteDrink(java.getId());
+    drinkService.delete(java.getId());
     Mockito.verify(drinkRepository, Mockito.times(1)).deleteById(java.getId());
   }
 }

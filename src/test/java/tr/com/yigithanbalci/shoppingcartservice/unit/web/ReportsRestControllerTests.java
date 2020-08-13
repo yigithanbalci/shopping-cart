@@ -46,7 +46,7 @@ public class ReportsRestControllerTests {
     customerAnalysis.add(yigit);
     customerAnalysis.add(ali);
 
-    given(service.customerAnalysisReport()).willReturn(customerAnalysis);
+    given(service.getCustomerAnalysisReport()).willReturn(customerAnalysis);
 
     mockMvc.perform(
         MockMvcRequestBuilders.get("/admin/reports/users/total-orders")
@@ -67,7 +67,7 @@ public class ReportsRestControllerTests {
     drinkAndMostUsedToppings.add(tea);
     drinkAndMostUsedToppings.add(latte);
 
-    given(service.drinkAnalysisReport()).willReturn(drinkAndMostUsedToppings);
+    given(service.getDrinkAnalysisReport()).willReturn(drinkAndMostUsedToppings);
 
     mockMvc.perform(
         MockMvcRequestBuilders.get("/admin/reports/drinks/most-used-topping")
@@ -80,8 +80,8 @@ public class ReportsRestControllerTests {
 
   @Test
   public void whenException_thenInternalServerError() throws Exception {
-    given(service.customerAnalysisReport()).willThrow(new RuntimeException("test"));
-    given(service.drinkAnalysisReport()).willThrow(new RuntimeException("test"));
+    given(service.getCustomerAnalysisReport()).willThrow(new RuntimeException("test"));
+    given(service.getDrinkAnalysisReport()).willThrow(new RuntimeException("test"));
 
     mockMvc.perform(
         MockMvcRequestBuilders.get("/admin/reports/users/total-orders")

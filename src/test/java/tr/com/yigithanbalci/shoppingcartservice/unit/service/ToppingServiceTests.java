@@ -72,7 +72,7 @@ public class ToppingServiceTests {
     Mockito.when(toppingRepository.findById(5L)).thenReturn(Optional.of(mapleSyrup));
     Mockito.when(toppingRepository.save(mapleSyrup)).thenReturn(mapleSyrup);
 
-    ToppingEntity savedTopping = toppingService.createTopping(mapleSyrup);
+    ToppingEntity savedTopping = toppingService.create(mapleSyrup);
     Mockito.verify(toppingRepository, Mockito.times(1)).save(mapleSyrup);
     assertThat(savedTopping.getName()).isEqualTo(mapleSyrup.getName());
 
@@ -80,12 +80,12 @@ public class ToppingServiceTests {
     mapleSyrup.setPrice(4.0f);
     Mockito.when(toppingRepository.save(updatedMapleSyrup)).thenReturn(updatedMapleSyrup);
 
-    ToppingEntity updatedTopping = toppingService.updateTopping(mapleSyrup);
+    ToppingEntity updatedTopping = toppingService.update(mapleSyrup);
     Mockito.verify(toppingRepository, Mockito.times(2)).save(mapleSyrup);
     assertThat(updatedTopping.getPrice()).isEqualTo(updatedMapleSyrup.getPrice());
 
     mapleSyrup.setId(5L);
-    toppingService.deleteTopping(mapleSyrup.getId());
+    toppingService.delete(mapleSyrup.getId());
     Mockito.verify(toppingRepository, Mockito.times(1)).deleteById(mapleSyrup.getId());
   }
 }

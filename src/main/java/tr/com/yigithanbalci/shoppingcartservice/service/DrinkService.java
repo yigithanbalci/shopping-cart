@@ -5,9 +5,8 @@ import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 
 public interface DrinkService {
 
-  // TODO: 13.08.2020 interface impl ayri package. bagimsizlik.
-  DrinkEntity createDrink(DrinkEntity drinkEntity);
-  DrinkEntity updateDrink(DrinkEntity drinkEntity);
-  void deleteDrink(Long id);
+  DrinkEntity create(DrinkEntity drinkEntity);
+  DrinkEntity update(DrinkEntity drinkEntity);
+  void delete(Long id);
   List<DrinkEntity> findAll();
 }

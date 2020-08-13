@@ -23,7 +23,7 @@ public class ReportsRestController {
   @GetMapping("/users/total-orders")
   public ResponseEntity<List<CustomerAnalysis>> getTotalOrderByUser(){
     try {
-      List<CustomerAnalysis> customerAnalysis = service.customerAnalysisReport();
+      List<CustomerAnalysis> customerAnalysis = service.getCustomerAnalysisReport();
       return ResponseEntity.ok(customerAnalysis);
     } catch (Exception e) {
       log.error("Exception occurs while reporting order by user {}", e.getLocalizedMessage(), e);
@@ -34,7 +34,7 @@ public class ReportsRestController {
   @GetMapping("/drinks/most-used-topping")
   public ResponseEntity<List<DrinkAndMostUsedTopping>> getMostUsedToppingsForDrinks(){
     try {
-      List<DrinkAndMostUsedTopping> drinkAnalysis = service.drinkAnalysisReport();
+      List<DrinkAndMostUsedTopping> drinkAnalysis = service.getDrinkAnalysisReport();
       return ResponseEntity.ok(drinkAnalysis);
     } catch (Exception e) {
       log.error("Exception occurs while reporting toppings by drink {}", e.getLocalizedMessage(), e);

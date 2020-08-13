@@ -19,7 +19,7 @@ public class ToppingServiceImpl implements ToppingService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public ToppingEntity createTopping(ToppingEntity toppingEntity) {
+  public ToppingEntity create(ToppingEntity toppingEntity) {
     log.info("Creating a topping: " + toppingEntity.getName());
     toppingEntity.setId(null);
     ToppingEntity createdTopping = repository.save(toppingEntity);
@@ -31,7 +31,7 @@ public class ToppingServiceImpl implements ToppingService {
   // TODO: 13.08.2020 debug levellarina dikkat et.
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public ToppingEntity updateTopping(ToppingEntity toppingEntity) {
+  public ToppingEntity update(ToppingEntity toppingEntity) {
     log.info("Updating a topping: " + toppingEntity.getName());
     ToppingEntity retrieved = repository.findById(toppingEntity.getId())
         .orElseThrow(() -> new ToppingNotFoundException(
@@ -45,7 +45,7 @@ public class ToppingServiceImpl implements ToppingService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public void deleteTopping(Long id) {
+  public void delete(Long id) {
     log.info("Deleting a topping: " + id);
     repository.deleteById(id);
     log.info("Deleted a topping: " + id);

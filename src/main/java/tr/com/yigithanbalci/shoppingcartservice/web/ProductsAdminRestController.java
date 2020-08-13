@@ -29,11 +29,10 @@ public class ProductsAdminRestController {
   private final DrinkService drinkService;
   private final ToppingService toppingService;
 
-  // TODO: 12.08.2020 argumanlari final yap.
   @PostMapping("/drinks")
   public ResponseEntity<DrinkEntity> createDrink(@RequestBody final Drink drink) {
     try {
-      DrinkEntity drinkEntity = drinkService.createDrink(DrinkEntity.from(drink));
+      DrinkEntity drinkEntity = drinkService.create(DrinkEntity.from(drink));
       return ResponseEntity.ok(drinkEntity);
     } catch (Exception e) {
       log.error("Exception occurs while creating drink {} : {}", drink, e.getLocalizedMessage(), e);
@@ -42,9 +41,9 @@ public class ProductsAdminRestController {
   }
 
   @PostMapping("/toppings")
-  public ResponseEntity<ToppingEntity> createTopping(@RequestBody Topping topping) {
+  public ResponseEntity<ToppingEntity> createTopping(@RequestBody final Topping topping) {
     try {
-      ToppingEntity toppingEntity = toppingService.createTopping(ToppingEntity.from(topping));
+      ToppingEntity toppingEntity = toppingService.create(ToppingEntity.from(topping));
       return ResponseEntity.ok(toppingEntity);
     } catch (Exception e) {
       log.error("Exception occurs while creating topping {} : {}", topping, e.getLocalizedMessage(),
@@ -54,12 +53,12 @@ public class ProductsAdminRestController {
   }
 
   @PutMapping("/drinks/{drinkId}")
-  public ResponseEntity<DrinkEntity> updateDrink(@RequestBody Drink drink,
-      @PathVariable Long drinkId) {
+  public ResponseEntity<DrinkEntity> updateDrink(@RequestBody final Drink drink,
+      @PathVariable final Long drinkId) {
     try {
       DrinkEntity drinkEntity = DrinkEntity.from(drink);
       drinkEntity.setId(drinkId);
-      DrinkEntity updatedDrinkEntity = drinkService.updateDrink(drinkEntity);
+      DrinkEntity updatedDrinkEntity = drinkService.update(drinkEntity);
       return ResponseEntity.ok(updatedDrinkEntity);
     } catch (DrinkNotFoundException e) {
       log.error("Drink not found with Id: " + drinkId);
@@ -71,12 +70,12 @@ public class ProductsAdminRestController {
   }
 
   @PutMapping("/toppings/{toppingId}")
-  public ResponseEntity<ToppingEntity> updateTopping(@RequestBody Topping topping,
-      @PathVariable Long toppingId) {
+  public ResponseEntity<ToppingEntity> updateTopping(@RequestBody final Topping topping,
+      @PathVariable final Long toppingId) {
     try {
       ToppingEntity toppingEntity = ToppingEntity.from(topping);
       toppingEntity.setId(toppingId);
-      ToppingEntity updatedToppingEntity = toppingService.updateTopping(toppingEntity);
+      ToppingEntity updatedToppingEntity = toppingService.update(toppingEntity);
       return ResponseEntity.ok(updatedToppingEntity);
     } catch (ToppingNotFoundException e) {
       log.error("Topping not found with Id: " + toppingId);
@@ -89,9 +88,9 @@ public class ProductsAdminRestController {
   }
 
   @DeleteMapping("/drinks/{drinkId}")
-  public ResponseEntity<Void> deleteDrink(@PathVariable Long drinkId) {
+  public ResponseEntity<Void> deleteDrink(@PathVariable final Long drinkId) {
     try {
-      drinkService.deleteDrink(drinkId);
+      drinkService.delete(drinkId);
     } catch (Exception e) {
       log.error("Exception occurs while deleting drink {} : {}", drinkId, e.getLocalizedMessage(),
           e);
@@ -101,9 +100,9 @@ public class ProductsAdminRestController {
   }
 
   @DeleteMapping("/toppings/{toppingId}")
-  public ResponseEntity<Void> deleteTopping(@PathVariable Long toppingId) {
+  public ResponseEntity<Void> deleteTopping(@PathVariable final Long toppingId) {
     try {
-      toppingService.deleteTopping(toppingId);
+      toppingService.delete(toppingId);
     } catch (Exception e) {
       log.error("Exception occurs while deleting topping {} : {}", toppingId,
           e.getLocalizedMessage(), e);

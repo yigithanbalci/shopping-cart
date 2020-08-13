@@ -61,8 +61,8 @@ public class ProductsAdminRestControllerTests {
     mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
     ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
-    given(drinkService.createDrink(DrinkEntity.from(blackCoffee))).willReturn(blackCoffeeEntity);
-    given(drinkService.updateDrink(updatedBlackCoffeeEntity)).willReturn(updatedBlackCoffeeEntity);
+    given(drinkService.create(DrinkEntity.from(blackCoffee))).willReturn(blackCoffeeEntity);
+    given(drinkService.update(updatedBlackCoffeeEntity)).willReturn(updatedBlackCoffeeEntity);
 
     String requestJson = ow.writeValueAsString(blackCoffee);
     mockMvc.perform(
@@ -70,7 +70,7 @@ public class ProductsAdminRestControllerTests {
             .contentType(MediaType.APPLICATION_JSON).content(requestJson))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name", is(blackCoffee.getName())));
-    Mockito.verify(drinkService, Mockito.times(1)).createDrink(DrinkEntity.from(blackCoffee));
+    Mockito.verify(drinkService, Mockito.times(1)).create(DrinkEntity.from(blackCoffee));
 
     requestJson = ow.writeValueAsString(updatedBlackCoffee);
     mockMvc.perform(
@@ -78,13 +78,13 @@ public class ProductsAdminRestControllerTests {
             .contentType(MediaType.APPLICATION_JSON).content(requestJson))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.price", is(5.0)));
-    Mockito.verify(drinkService, Mockito.times(1)).updateDrink(updatedBlackCoffeeEntity);
+    Mockito.verify(drinkService, Mockito.times(1)).update(updatedBlackCoffeeEntity);
 
     mockMvc.perform(
         MockMvcRequestBuilders.delete("/admin/products/drinks/1")
             .contentType(MediaType.APPLICATION_JSON).content(requestJson))
         .andExpect(status().isOk());
-    Mockito.verify(drinkService, Mockito.times(1)).deleteDrink(updatedBlackCoffeeEntity.getId());
+    Mockito.verify(drinkService, Mockito.times(1)).delete(updatedBlackCoffeeEntity.getId());
   }
 
   @Test
@@ -99,8 +99,8 @@ public class ProductsAdminRestControllerTests {
     mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
     ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
-    given(toppingService.createTopping(ToppingEntity.from(milk))).willReturn(milkEntity);
-    given(toppingService.updateTopping(updatedHazelnutSyrupEntity))
+    given(toppingService.create(ToppingEntity.from(milk))).willReturn(milkEntity);
+    given(toppingService.update(updatedHazelnutSyrupEntity))
         .willReturn(updatedHazelnutSyrupEntity);
 
     String requestJson = ow.writeValueAsString(milk);
@@ -109,7 +109,7 @@ public class ProductsAdminRestControllerTests {
             .contentType(MediaType.APPLICATION_JSON).content(requestJson))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name", is(milk.getName())));
-    Mockito.verify(toppingService, Mockito.times(1)).createTopping(ToppingEntity.from(milk));
+    Mockito.verify(toppingService, Mockito.times(1)).create(ToppingEntity.from(milk));
 
     requestJson = ow.writeValueAsString(updatedMilk);
     mockMvc.perform(
@@ -117,14 +117,14 @@ public class ProductsAdminRestControllerTests {
             .contentType(MediaType.APPLICATION_JSON).content(requestJson))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.price", is(3.0)));
-    Mockito.verify(toppingService, Mockito.times(1)).updateTopping(updatedHazelnutSyrupEntity);
+    Mockito.verify(toppingService, Mockito.times(1)).update(updatedHazelnutSyrupEntity);
 
     mockMvc.perform(
         MockMvcRequestBuilders.delete("/admin/products/toppings/1")
             .contentType(MediaType.APPLICATION_JSON).content(requestJson))
         .andExpect(status().isOk());
     Mockito.verify(toppingService, Mockito.times(1))
-        .deleteTopping(updatedHazelnutSyrupEntity.getId());
+        .delete(updatedHazelnutSyrupEntity.getId());
   }
 
   @Test
@@ -139,9 +139,9 @@ public class ProductsAdminRestControllerTests {
     mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
     ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
-    given(drinkService.createDrink(DrinkEntity.from(blackCoffee))).willThrow(new RuntimeException("test"));
-    given(drinkService.updateDrink(updatedBlackCoffeeEntity)).willThrow(new RuntimeException("test"));
-    doThrow(new RuntimeException("test")).when(drinkService).deleteDrink(1L);
+    given(drinkService.create(DrinkEntity.from(blackCoffee))).willThrow(new RuntimeException("test"));
+    given(drinkService.update(updatedBlackCoffeeEntity)).willThrow(new RuntimeException("test"));
+    doThrow(new RuntimeException("test")).when(drinkService).delete(1L);
 
     String requestJson = ow.writeValueAsString(blackCoffee);
     mockMvc.perform(
@@ -172,9 +172,9 @@ public class ProductsAdminRestControllerTests {
     mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
     ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
-    given(toppingService.createTopping(ToppingEntity.from(milk))).willThrow(new RuntimeException("test"));
-    given(toppingService.updateTopping(updatedHazelnutSyrupEntity)).willThrow(new RuntimeException("test"));
-    doThrow(new RuntimeException("test")).when(toppingService).deleteTopping(1L);
+    given(toppingService.create(ToppingEntity.from(milk))).willThrow(new RuntimeException("test"));
+    given(toppingService.update(updatedHazelnutSyrupEntity)).willThrow(new RuntimeException("test"));
+    doThrow(new RuntimeException("test")).when(toppingService).delete(1L);
 
     String requestJson = ow.writeValueAsString(milk);
     mockMvc.perform(
@@ -205,7 +205,7 @@ public class ProductsAdminRestControllerTests {
     mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
     ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
-    given(drinkService.updateDrink(updatedBlackCoffeeEntity)).willThrow(new DrinkNotFoundException("test"));
+    given(drinkService.update(updatedBlackCoffeeEntity)).willThrow(new DrinkNotFoundException("test"));
 
     String requestJson = ow.writeValueAsString(updatedBlackCoffee);
     mockMvc.perform(
@@ -224,7 +224,7 @@ public class ProductsAdminRestControllerTests {
     mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
     ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
-    given(toppingService.updateTopping(updatedHazelnutSyrupEntity)).willThrow(new ToppingNotFoundException("test"));
+    given(toppingService.update(updatedHazelnutSyrupEntity)).willThrow(new ToppingNotFoundException("test"));
 
     String requestJson = ow.writeValueAsString(updatedMilk);
     mockMvc.perform(

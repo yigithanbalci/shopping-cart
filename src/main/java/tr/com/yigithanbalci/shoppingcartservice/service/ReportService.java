@@ -6,6 +6,6 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.report.DrinkAndMostUsedToppi
 
 public interface ReportService {
 
-  List<CustomerAnalysis> customerAnalysisReport();
-  List<DrinkAndMostUsedTopping> drinkAnalysisReport();
+  List<CustomerAnalysis> getCustomerAnalysisReport();
+  List<DrinkAndMostUsedTopping> getDrinkAnalysisReport();
 }

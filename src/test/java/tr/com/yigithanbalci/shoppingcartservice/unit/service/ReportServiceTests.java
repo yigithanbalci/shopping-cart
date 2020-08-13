@@ -109,7 +109,7 @@ public class ReportServiceTests {
     String username = "josh";
     Long orders = 5L;
 
-    List<CustomerAnalysis> found = reportService.customerAnalysisReport();
+    List<CustomerAnalysis> found = reportService.getCustomerAnalysisReport();
     CustomerAnalysis foundAnalysisOfCustomer = found.stream()
         .filter(customerAndOrderWrapper -> "josh".equals(customerAndOrderWrapper.getUsername()))
         .findFirst().orElse(
@@ -126,7 +126,7 @@ public class ReportServiceTests {
     String drink = "Black Coffee";
     String topping = "Hazelnut syrup";
 
-    List<DrinkAndMostUsedTopping> drinkAnalysis = reportService.drinkAnalysisReport();
+    List<DrinkAndMostUsedTopping> drinkAnalysis = reportService.getDrinkAnalysisReport();
     DrinkAndMostUsedTopping found = drinkAnalysis.stream()
         .filter(drinkAndMostUsedToppingWrapper -> "Black Coffee"
             .equals(drinkAndMostUsedToppingWrapper.getDrink())).findFirst().orElse(

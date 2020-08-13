@@ -19,7 +19,7 @@ public class DrinkServiceImpl implements DrinkService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public DrinkEntity createDrink(DrinkEntity drinkEntity) {
+  public DrinkEntity create(DrinkEntity drinkEntity) {
     log.info("Creating a drink: " + drinkEntity.getName());
     drinkEntity.setId(null);
     DrinkEntity createdDrink = repository.save(drinkEntity);
@@ -29,7 +29,7 @@ public class DrinkServiceImpl implements DrinkService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public DrinkEntity updateDrink(DrinkEntity drinkEntity) {
+  public DrinkEntity update(DrinkEntity drinkEntity) {
     log.info("Updating a drink: " + drinkEntity.getName());
     DrinkEntity retrieved = repository.findById(drinkEntity.getId())
         .orElseThrow(
@@ -43,7 +43,7 @@ public class DrinkServiceImpl implements DrinkService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public void deleteDrink(Long id) {
+  public void delete(Long id) {
     log.info("Deleting a drink: " + id);
     repository.deleteById(id);
     log.info("Deleted a drink: " + id);

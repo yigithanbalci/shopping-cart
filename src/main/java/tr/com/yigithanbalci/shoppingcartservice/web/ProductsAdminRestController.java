@@ -1,6 +1,5 @@
 package tr.com.yigithanbalci.shoppingcartservice.web;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +26,7 @@ import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
 @RequiredArgsConstructor
 public class ProductsAdminRestController {
 
-  @NonNull
   private final DrinkService drinkService;
-  @NonNull
   private final ToppingService toppingService;
 
   // TODO: 12.08.2020 argumanlari final yap.
@@ -50,7 +47,8 @@ public class ProductsAdminRestController {
       ToppingEntity toppingEntity = toppingService.createTopping(ToppingEntity.from(topping));
       return ResponseEntity.ok(toppingEntity);
     } catch (Exception e) {
-      log.error("Exception occurs while creating topping {} : {}", topping, e.getLocalizedMessage(), e);
+      log.error("Exception occurs while creating topping {} : {}", topping, e.getLocalizedMessage(),
+          e);
       throw new InternalServerException("Topping could not be created: " + e.getLocalizedMessage());
     }
   }
@@ -63,7 +61,7 @@ public class ProductsAdminRestController {
       drinkEntity.setId(drinkId);
       DrinkEntity updatedDrinkEntity = drinkService.updateDrink(drinkEntity);
       return ResponseEntity.ok(updatedDrinkEntity);
-    } catch (DrinkNotFoundException e){
+    } catch (DrinkNotFoundException e) {
       log.error("Drink not found with Id: " + drinkId);
       throw e;
     } catch (Exception e) {
@@ -80,11 +78,12 @@ public class ProductsAdminRestController {
       toppingEntity.setId(toppingId);
       ToppingEntity updatedToppingEntity = toppingService.updateTopping(toppingEntity);
       return ResponseEntity.ok(updatedToppingEntity);
-    } catch (ToppingNotFoundException e){
+    } catch (ToppingNotFoundException e) {
       log.error("Topping not found with Id: " + toppingId);
       throw e;
     } catch (Exception e) {
-      log.error("Exception occurs while updating topping {} : {}", topping, e.getLocalizedMessage(), e);
+      log.error("Exception occurs while updating topping {} : {}", topping, e.getLocalizedMessage(),
+          e);
       throw new InternalServerException("Topping could not be updated: " + e.getLocalizedMessage());
     }
   }
@@ -94,7 +93,8 @@ public class ProductsAdminRestController {
     try {
       drinkService.deleteDrink(drinkId);
     } catch (Exception e) {
-      log.error("Exception occurs while deleting drink {} : {}", drinkId, e.getLocalizedMessage(), e);
+      log.error("Exception occurs while deleting drink {} : {}", drinkId, e.getLocalizedMessage(),
+          e);
       throw new InternalServerException("Drink could not be deleted: " + e.getLocalizedMessage());
     }
     return ResponseEntity.ok().build();
@@ -105,7 +105,8 @@ public class ProductsAdminRestController {
     try {
       toppingService.deleteTopping(toppingId);
     } catch (Exception e) {
-      log.error("Exception occurs while deleting topping {} : {}", toppingId, e.getLocalizedMessage(), e);
+      log.error("Exception occurs while deleting topping {} : {}", toppingId,
+          e.getLocalizedMessage(), e);
       throw new InternalServerException("Topping could not be deleted: " + e.getLocalizedMessage());
     }
     return ResponseEntity.ok().build();

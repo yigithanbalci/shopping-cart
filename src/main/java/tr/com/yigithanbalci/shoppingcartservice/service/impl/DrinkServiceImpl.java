@@ -1,7 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.service.impl;
 
 import java.util.List;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +15,6 @@ import tr.com.yigithanbalci.shoppingcartservice.service.DrinkService;
 @RequiredArgsConstructor
 public class DrinkServiceImpl implements DrinkService {
 
-  @NonNull
   private final DrinkRepository repository;
 
   @PreAuthorize("hasAuthority('ADMIN')")
@@ -34,7 +32,8 @@ public class DrinkServiceImpl implements DrinkService {
   public DrinkEntity updateDrink(DrinkEntity drinkEntity) {
     log.info("Updating a drink: " + drinkEntity.getName());
     DrinkEntity retrieved = repository.findById(drinkEntity.getId())
-        .orElseThrow(() -> new DrinkNotFoundException("Drink not found with id: " + drinkEntity.getId()));
+        .orElseThrow(
+            () -> new DrinkNotFoundException("Drink not found with id: " + drinkEntity.getId()));
     retrieved.setName(drinkEntity.getName());
     retrieved.setPrice(drinkEntity.getPrice());
     DrinkEntity updatedDrink = repository.save(drinkEntity);
@@ -54,7 +53,7 @@ public class DrinkServiceImpl implements DrinkService {
   public List<DrinkEntity> findAll() {
     log.info("Retrieving all drinks");
     List<DrinkEntity> all = repository.findAll();
-    if (all.isEmpty()){
+    if (all.isEmpty()) {
       throw new DrinkNotFoundException("Not found any drinks in database.");
     }
     log.info("Retrieved all drink");

@@ -1,7 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.web;
 
 import java.security.Principal;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,7 @@ import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 @RequiredArgsConstructor
 public class ShoppingCartRestController {
 
-  @NonNull ShoppingService shoppingService;
+  private final ShoppingService shoppingService;
 
   @PutMapping("/{userId}/cart")
   public ResponseEntity<Cart> addItemToCart(Principal principal, @RequestBody Item item,

@@ -1,7 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.service.impl;
 
 import java.util.List;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +15,7 @@ import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
 @RequiredArgsConstructor
 public class ToppingServiceImpl implements ToppingService {
 
-  @NonNull private final ToppingRepository repository;
+  private final ToppingRepository repository;
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
@@ -35,7 +34,8 @@ public class ToppingServiceImpl implements ToppingService {
   public ToppingEntity updateTopping(ToppingEntity toppingEntity) {
     log.info("Updating a topping: " + toppingEntity.getName());
     ToppingEntity retrieved = repository.findById(toppingEntity.getId())
-        .orElseThrow(() -> new ToppingNotFoundException("Topping not found with id: " + toppingEntity.getId()));
+        .orElseThrow(() -> new ToppingNotFoundException(
+            "Topping not found with id: " + toppingEntity.getId()));
     retrieved.setName(toppingEntity.getName());
     retrieved.setPrice(toppingEntity.getPrice());
     ToppingEntity updatedTopping = repository.save(toppingEntity);
@@ -55,7 +55,7 @@ public class ToppingServiceImpl implements ToppingService {
   public List<ToppingEntity> findAll() {
     log.info("Retrieving all topping");
     List<ToppingEntity> all = repository.findAll();
-    if (all.isEmpty()){
+    if (all.isEmpty()) {
       throw new ToppingNotFoundException("Not found any toppings in database.");
     }
     log.info("Retrieved all topping");

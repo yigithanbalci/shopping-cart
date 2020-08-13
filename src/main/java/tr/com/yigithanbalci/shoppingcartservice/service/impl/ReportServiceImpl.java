@@ -2,7 +2,6 @@ package tr.com.yigithanbalci.shoppingcartservice.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,16 +23,9 @@ import tr.com.yigithanbalci.shoppingcartservice.service.ReportService;
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
 
-  @NonNull
   private final CustomerRepository customerRepository;
-
-  @NonNull
   private final DrinkRepository drinkRepository;
-
-  @NonNull
   private final ToppingRepository toppingRepository;
-
-  @NonNull
   private final DrinkToppingRelationRepository drinkToppingRelationRepository;
 
   @PreAuthorize("hasAuthority('ADMIN')")

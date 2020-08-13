@@ -1,7 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.web;
 
 import java.util.List;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +21,8 @@ import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
 @RequiredArgsConstructor
 public class ProductsCustomerRestController {
 
-  @NonNull private final DrinkService drinkService;
-  @NonNull private final ToppingService toppingService;
+  private final DrinkService drinkService;
+  private final ToppingService toppingService;
 
   @GetMapping("/toppings")
   public ResponseEntity<List<ToppingEntity>> getAllToppings(){

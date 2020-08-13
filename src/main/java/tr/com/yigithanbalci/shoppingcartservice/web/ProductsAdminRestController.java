@@ -55,7 +55,7 @@ public class ProductsAdminRestController {
 
   @PutMapping("/drinks/{drinkId}")
   public ResponseEntity<DrinkEntity> updateDrink(@RequestBody Drink drink,
-      @PathVariable("drinkId") Long drinkId) {
+      @PathVariable Long drinkId) {
     try {
       DrinkEntity drinkEntity = DrinkEntity.from(drink);
       drinkEntity.setId(drinkId);
@@ -72,7 +72,7 @@ public class ProductsAdminRestController {
 
   @PutMapping("/toppings/{toppingId}")
   public ResponseEntity<ToppingEntity> updateTopping(@RequestBody Topping topping,
-      @PathVariable("toppingId") Long toppingId) {
+      @PathVariable Long toppingId) {
     try {
       ToppingEntity toppingEntity = ToppingEntity.from(topping);
       toppingEntity.setId(toppingId);
@@ -89,7 +89,7 @@ public class ProductsAdminRestController {
   }
 
   @DeleteMapping("/drinks/{drinkId}")
-  public ResponseEntity<Void> deleteDrink(@PathVariable("drinkId") Long drinkId) {
+  public ResponseEntity<Void> deleteDrink(@PathVariable Long drinkId) {
     try {
       drinkService.deleteDrink(drinkId);
     } catch (Exception e) {
@@ -101,7 +101,7 @@ public class ProductsAdminRestController {
   }
 
   @DeleteMapping("/toppings/{toppingId}")
-  public ResponseEntity<Void> deleteTopping(@PathVariable("toppingId") Long toppingId) {
+  public ResponseEntity<Void> deleteTopping(@PathVariable Long toppingId) {
     try {
       toppingService.deleteTopping(toppingId);
     } catch (Exception e) {

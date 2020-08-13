@@ -27,8 +27,6 @@ public class ToppingServiceImpl implements ToppingService {
     return createdTopping;
   }
 
-  // TODO: 13.08.2020 updating debugda olsun.
-  // TODO: 13.08.2020 debug levellarina dikkat et.
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
   public ToppingEntity update(ToppingEntity toppingEntity) {

@@ -33,7 +33,6 @@
 		</repository>
 	</repositories>
 
-<!--- comment ekle. -->
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -138,5 +137,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

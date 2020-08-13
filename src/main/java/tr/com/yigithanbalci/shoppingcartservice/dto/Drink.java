@@ -8,13 +8,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// Builder for sake of usage. Temp refactor to Abstract Factory Methods maybe.
 @Data
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Drink implements Serializable {
 
-  // TODO: 13.08.2020 dtolar abarti gibi.
   @JsonIgnore
   private Long id;
   private String name;

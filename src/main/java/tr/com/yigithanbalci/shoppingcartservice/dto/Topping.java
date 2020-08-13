@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Topping implements Serializable {
 
-  // TODO: 13.08.2020 baseentity
   @JsonIgnore
   private Long id;
   private String name;

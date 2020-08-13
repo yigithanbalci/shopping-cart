@@ -15,14 +15,13 @@ public class Item implements Serializable {
   private List<Topping> toppings = new ArrayList<>();
   private Float amount = 0f;
 
-  public Item(Drink drink) {
+  public Item(final Drink drink) {
     if(drink != null && drink.getPrice() != null){
-      amount = amount + drink.getPrice();
+      amount = drink.getPrice();
     }
     this.drink = drink;
   }
 
-  // TODO: 13.08.2020 sil.
   public void setDrink(final Drink drink){
     if(this.drink != null && this.drink.getPrice() != null){
       amount = amount - this.drink.getPrice();

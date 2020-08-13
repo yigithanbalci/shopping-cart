@@ -13,7 +13,7 @@ import tr.com.yigithanbalci.shoppingcartservice.repository.CartRepository;
 import tr.com.yigithanbalci.shoppingcartservice.repository.impl.CartRepositoryImpl;
 
 @RunWith(SpringRunner.class)
-public class CartRepositoryIntTests {
+public class CartRepositoryTests {
 
   @Test
   public void whenFindByUserId_thenReturnCart_thenDeleteCart() {

@@ -13,7 +13,7 @@ import tr.com.yigithanbalci.shoppingcartservice.repository.UserRepository;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class UserRepositoryIntTests {
+public class UserRepositoryTests {
 
   @Autowired
   private TestEntityManager entityManager;

@@ -3,15 +3,11 @@ package tr.com.yigithanbalci.shoppingcartservice.dto;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Item implements Serializable {
 
@@ -19,37 +15,28 @@ public class Item implements Serializable {
   private List<Topping> toppings = new ArrayList<>();
   private Float amount = 0f;
 
-  public Item(@NonNull Drink drink) {
+  public Item(Drink drink) {
+    if(drink != null && drink.getPrice() != null){
+      amount = amount + drink.getPrice();
+    }
     this.drink = drink;
-    amount = amount + drink.getPrice();
   }
 
   // TODO: 13.08.2020 sil.
-  public void setDrink(){
+  public void setDrink(final Drink drink){
+    if(this.drink != null && this.drink.getPrice() != null){
+      amount = amount - this.drink.getPrice();
+    }
+    if(drink != null && drink.getPrice() != null){
+      amount = amount + drink.getPrice();
+    }
     this.drink = drink;
-    amount = amount + drink.getPrice();
   }
 
   public void addTopping(Topping topping) {
-    toppings.add(topping);
-    amount = amount + topping.getPrice();
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    if (topping != null){
+      toppings.add(topping);
+      amount = amount + topping.getPrice();
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Item item = (Item) o;
-    return drink.equals(item.drink) &&
-        Objects.equals(toppings, item.toppings);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(drink, toppings);
   }
 }

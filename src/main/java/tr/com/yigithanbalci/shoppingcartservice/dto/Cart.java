@@ -3,14 +3,11 @@ package tr.com.yigithanbalci.shoppingcartservice.dto;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Cart implements Serializable {
 
@@ -25,23 +22,5 @@ public class Cart implements Serializable {
   public void deleteItem(Item item){
     items.remove(item);
     amount = amount - item.getAmount();
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Cart cart = (Cart) o;
-    return items.equals(cart.items) &&
-        amount.equals(cart.amount);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(items, amount);
   }
 }

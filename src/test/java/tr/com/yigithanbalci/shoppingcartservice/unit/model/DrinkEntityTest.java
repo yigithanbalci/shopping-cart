@@ -4,11 +4,12 @@ import static pl.pojo.tester.api.assertion.Assertions.assertPojoMethodsFor;
 
 import org.junit.Test;
 import pl.pojo.tester.api.assertion.Method;
-import tr.com.yigithanbalci.shoppingcartservice.model.DrinkToppingRelation;
+import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 
-public class DrinkToppingRelationTest {
+public class DrinkEntityTest {
+
   @Test
   public void testDataMethods(){
-    assertPojoMethodsFor(DrinkToppingRelation.class).testing(Method.values()).areWellImplemented();
+    assertPojoMethodsFor(DrinkEntity.class).testing(Method.values()).areWellImplemented();
   }
 }

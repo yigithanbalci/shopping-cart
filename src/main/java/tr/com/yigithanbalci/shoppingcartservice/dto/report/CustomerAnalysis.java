@@ -4,14 +4,10 @@ import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-// TODO: 12.08.2020 @data
-// TODO: 12.08.2020 gereksiz builderlari kaldir
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)

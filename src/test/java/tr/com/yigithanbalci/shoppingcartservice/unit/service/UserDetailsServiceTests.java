@@ -1,20 +1,21 @@
 package tr.com.yigithanbalci.shoppingcartservice.unit.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tr.com.yigithanbalci.shoppingcartservice.auth.UserDetailsImpl;
 import tr.com.yigithanbalci.shoppingcartservice.model.User;
 import tr.com.yigithanbalci.shoppingcartservice.repository.UserRepository;
 import tr.com.yigithanbalci.shoppingcartservice.service.impl.UserDetailsServiceImpl;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class UserDetailsServiceTests {
 
   private UserDetailsServiceImpl userDetailsService;
@@ -22,7 +23,7 @@ public class UserDetailsServiceTests {
   @MockBean
   private UserRepository userRepository;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     userDetailsService = new UserDetailsServiceImpl(userRepository);
   }
@@ -43,9 +44,9 @@ public class UserDetailsServiceTests {
     assertThat(userDetailsService.loadUserByUsername("yigit")).isEqualTo(userDetails);
   }
 
-  @Test(expected = UsernameNotFoundException.class)
+  @Test
   public void whenNotName_thenExceptionShouldBeThrown() {
     Mockito.when(userRepository.getUserByUsername("yigit")).thenReturn(null);
-    userDetailsService.loadUserByUsername("yigit");
+    assertThatExceptionOfType(UsernameNotFoundException.class).isThrownBy(() -> userDetailsService.loadUserByUsername("yigit"));
   }
 }

@@ -2,8 +2,10 @@ package tr.com.yigithanbalci.shoppingcartservice.unit.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
@@ -12,7 +14,7 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
 import tr.com.yigithanbalci.shoppingcartservice.repository.CartRepository;
 import tr.com.yigithanbalci.shoppingcartservice.repository.impl.CartRepositoryImpl;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class CartRepositoryTests {
 
   @Test

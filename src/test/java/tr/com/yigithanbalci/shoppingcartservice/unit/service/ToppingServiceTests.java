@@ -1,23 +1,24 @@
 package tr.com.yigithanbalci.shoppingcartservice.unit.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tr.com.yigithanbalci.shoppingcartservice.exception.ToppingNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
 import tr.com.yigithanbalci.shoppingcartservice.repository.ToppingRepository;
 import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
 import tr.com.yigithanbalci.shoppingcartservice.service.impl.ToppingServiceImpl;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class ToppingServiceTests {
 
   private ToppingService toppingService;
@@ -25,15 +26,15 @@ public class ToppingServiceTests {
   @MockBean
   private ToppingRepository toppingRepository;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     toppingService = new ToppingServiceImpl(toppingRepository);
   }
 
-  @Test(expected = ToppingNotFoundException.class)
+  @Test
   public void whenNotFound_thenExceptionShouldBeThrown(){
     Mockito.when(toppingRepository.findAll()).thenReturn(new ArrayList<>());
-    toppingService.findAll();
+    assertThatExceptionOfType(ToppingNotFoundException.class).isThrownBy(() -> toppingService.findAll());
   }
 
   @Test

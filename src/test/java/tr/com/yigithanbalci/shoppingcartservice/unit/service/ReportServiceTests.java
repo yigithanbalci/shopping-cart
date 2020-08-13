@@ -5,12 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tr.com.yigithanbalci.shoppingcartservice.dto.report.CustomerAnalysis;
 import tr.com.yigithanbalci.shoppingcartservice.dto.report.DrinkAndMostUsedTopping;
 import tr.com.yigithanbalci.shoppingcartservice.model.Customer;
@@ -25,7 +25,7 @@ import tr.com.yigithanbalci.shoppingcartservice.repository.ToppingRepository;
 import tr.com.yigithanbalci.shoppingcartservice.service.ReportService;
 import tr.com.yigithanbalci.shoppingcartservice.service.impl.ReportServiceImpl;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class ReportServiceTests {
 
   private ReportService reportService;
@@ -42,7 +42,7 @@ public class ReportServiceTests {
   @MockBean
   private DrinkToppingRelationRepository drinkToppingRelationRepository;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Customer josh = Customer.builder().id(1L).user(User.builder().id(1L).username("josh").build())
         .totalOrders(5L)

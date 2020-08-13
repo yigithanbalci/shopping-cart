@@ -8,11 +8,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,7 +25,7 @@ import tr.com.yigithanbalci.shoppingcartservice.service.DrinkService;
 import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
 import tr.com.yigithanbalci.shoppingcartservice.web.ProductsCustomerRestController;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProductsCustomerRestControllerTests {
 
   @Mock
@@ -36,7 +36,7 @@ public class ProductsCustomerRestControllerTests {
 
   private MockMvc mockMvc;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     ProductsCustomerRestController productsCustomerRestController = new ProductsCustomerRestController(
         drinkService, toppingService);

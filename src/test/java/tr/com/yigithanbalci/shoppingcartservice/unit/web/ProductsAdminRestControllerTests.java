@@ -9,12 +9,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,7 +29,7 @@ import tr.com.yigithanbalci.shoppingcartservice.service.DrinkService;
 import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
 import tr.com.yigithanbalci.shoppingcartservice.web.ProductsAdminRestController;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProductsAdminRestControllerTests {
 
   @Mock
@@ -40,7 +40,7 @@ public class ProductsAdminRestControllerTests {
 
   private MockMvc mockMvc;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     ProductsAdminRestController productsAdminRestController = new ProductsAdminRestController(
         drinkService, toppingService);

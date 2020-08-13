@@ -4,10 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
@@ -23,7 +26,7 @@ import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkToppingRelationR
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 import tr.com.yigithanbalci.shoppingcartservice.service.impl.ShoppingServiceImpl;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class ShoppingServiceTests {
 
   private ShoppingService shoppingService;
@@ -37,7 +40,7 @@ public class ShoppingServiceTests {
   @MockBean
   private DrinkToppingRelationRepository drinkToppingRelationRepository;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Cart threeItemCart = new Cart();
     Cart twoItemCart = new Cart();

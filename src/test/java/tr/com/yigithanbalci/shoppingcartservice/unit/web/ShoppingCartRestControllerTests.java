@@ -10,11 +10,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,7 +33,7 @@ import tr.com.yigithanbalci.shoppingcartservice.exception.CustomerNotFoundExcept
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 import tr.com.yigithanbalci.shoppingcartservice.web.ShoppingCartRestController;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ShoppingCartRestControllerTests {
 
   @Mock
@@ -38,7 +41,7 @@ public class ShoppingCartRestControllerTests {
 
   private MockMvc mockMvc;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     ShoppingCartRestController shoppingCartRestController = new ShoppingCartRestController(
         shoppingService);

@@ -1,23 +1,24 @@
 package tr.com.yigithanbalci.shoppingcartservice.unit.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tr.com.yigithanbalci.shoppingcartservice.exception.DrinkNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkRepository;
 import tr.com.yigithanbalci.shoppingcartservice.service.DrinkService;
 import tr.com.yigithanbalci.shoppingcartservice.service.impl.DrinkServiceImpl;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class DrinkServiceTests {
 
   private DrinkService drinkService;
@@ -25,15 +26,15 @@ public class DrinkServiceTests {
   @MockBean
   private DrinkRepository drinkRepository;
 
-  @Before
+  @BeforeEach
   public void setUp(){
     drinkService = new DrinkServiceImpl(drinkRepository);
   }
 
-  @Test(expected = DrinkNotFoundException.class)
+  @Test
   public void whenNotFound_thenExceptionShouldBeThrown(){
     Mockito.when(drinkRepository.findAll()).thenReturn(new ArrayList<>());
-    drinkService.findAll();
+    assertThatExceptionOfType(DrinkNotFoundException.class).isThrownBy(() -> drinkService.findAll());
   }
 
   @Test

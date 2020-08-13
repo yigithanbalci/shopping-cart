@@ -9,10 +9,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -22,7 +23,7 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.report.DrinkAndMostUsedToppi
 import tr.com.yigithanbalci.shoppingcartservice.service.ReportService;
 import tr.com.yigithanbalci.shoppingcartservice.web.ReportsRestController;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ReportsRestControllerTests {
 
   @Mock
@@ -30,7 +31,7 @@ public class ReportsRestControllerTests {
 
   private MockMvc mockMvc;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     ReportsRestController reportsRestController = new ReportsRestController(service);
     mockMvc = MockMvcBuilders.standaloneSetup(reportsRestController).build();

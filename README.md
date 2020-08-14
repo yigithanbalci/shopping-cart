@@ -92,3 +92,26 @@ ___
   "price": 1.0
 }
 ```
+
+### example requests via curl
+
+```
+POST DRINK
+curl -u admin:admin -X POST "http://localhost:8080/admin/products/drinks" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"name\":\"Americano\",\"price\":5.0}"
+
+DELETE TOPPING
+curl -u admin:admin -X DELETE "http://localhost:8080/admin/products/toppings/1" -H "accept: */*"
+
+GET TOPPINGS
+curl -u user1:user1 -X GET "http://localhost:8080/products/toppings" -H "accept: application/json"
+
+GET TOTAL ORDERS
+curl -u admin:admin -X GET "http://localhost:8080/admin/reports/users/total-orders" -H "accept: application/json"
+
+PUT ITEM
+curl -u user2:user2 -X PUT "http://localhost:8080/users/2/cart" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"drink\":{\"name\":\"Latte\",\"price\":5.0},\"toppings\":[{\"name\":\"Lemon\",\"price\":1.0}],\"amount\":6.0}"
+
+PUT CART (CHECKOUT CART)
+curl -u user1:user1 -X PUT "http://localhost:8080/users/1/cart/checkout" -H "accept: application/json"
+
+```

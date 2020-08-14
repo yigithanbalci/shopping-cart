@@ -44,8 +44,6 @@ public class User implements Serializable {
   @Column
   private Long orders;
 
-  @OneToOne(mappedBy = "user",
-      fetch = FetchType.LAZY,
-      cascade = CascadeType.ALL)
-  private Customer customer;
+  @Column
+  private Long customerId;
 }

@@ -17,7 +17,6 @@ import tr.com.yigithanbalci.shoppingcartservice.model.Customer;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkToppingRelation;
 import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
-import tr.com.yigithanbalci.shoppingcartservice.model.User;
 import tr.com.yigithanbalci.shoppingcartservice.repository.CustomerRepository;
 import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkRepository;
 import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkToppingRelationRepository;
@@ -44,14 +43,14 @@ public class ReportServiceTests {
 
   @BeforeEach
   public void setUp() {
-    Customer josh = Customer.builder().id(1L).user(User.builder().id(1L).username("josh").build())
+    Customer josh = Customer.builder().id(1L).userId(1L).username("josh")
         .totalOrders(5L)
         .build();
-    Customer jack = Customer.builder().id(2L).user(User.builder().id(2L).username("josh").build())
+    Customer jack = Customer.builder().id(2L).userId(2L).username("jack")
         .totalOrders(8L)
         .build();
     Customer jonathan = Customer.builder().id(3L)
-        .user(User.builder().id(3L).username("josh").build())
+        .userId(3L).username("jonathan")
         .totalOrders(9L).build();
 
     List<Customer> customers = new ArrayList<>();

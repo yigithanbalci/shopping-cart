@@ -3,15 +3,12 @@ package tr.com.yigithanbalci.shoppingcartservice.unit.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
@@ -87,22 +84,26 @@ public class ShoppingServiceTests {
         .build();
 
     Customer customer1 = new Customer();
+    customer1.setId(1L);
     customer1.setTotalOrders(0L);
     Customer customer2 = new Customer();
+    customer2.setId(2L);
     customer2.setTotalOrders(0L);
     Customer customer3 = new Customer();
+    customer3.setId(3L);
     customer3.setTotalOrders(0L);
     Customer customer4 = new Customer();
+    customer4.setId(4L);
     customer4.setTotalOrders(0L);
 
-    user1.setCustomer(customer1);
-    customer1.setUser(user1);
-    user2.setCustomer(customer2);
-    customer2.setUser(user2);
-    user3.setCustomer(customer3);
-    customer3.setUser(user3);
-    user4.setCustomer(customer4);
-    customer4.setUser(user4);
+    user1.setCustomerId(customer1.getId());
+    customer1.setUserId(user1.getId());
+    user2.setCustomerId(customer2.getId());
+    customer2.setUserId(user2.getId());
+    user3.setCustomerId(customer3.getId());
+    customer3.setUserId(user3.getId());
+    user4.setCustomerId(customer4.getId());
+    customer4.setUserId(user4.getId());
 
     Mockito.when(drinkToppingRelationRepository
         .findByDrinkIdEqualsAndToppingIdEquals(latte.getId(), hazelnutSyrup.getId()))

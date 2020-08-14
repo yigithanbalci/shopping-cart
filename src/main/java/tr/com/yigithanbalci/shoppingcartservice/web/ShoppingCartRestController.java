@@ -10,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +43,7 @@ public class ShoppingCartRestController {
       @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
           content = @Content)
   })
-  @PutMapping("/{userId}/cart")
+  @PostMapping("/{userId}/cart")
   public ResponseEntity<Cart> addItemToCart(final Principal principal, @RequestBody final Item item,
       @PathVariable final Long userId) {
     try {
@@ -69,7 +69,7 @@ public class ShoppingCartRestController {
       @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
           content = @Content)
   })
-  @DeleteMapping("/{userId}/cart")
+  @PutMapping("/{userId}/cart")
   public ResponseEntity<Cart> deleteItemFromCart(final Principal principal, @RequestBody final Item item,
       @PathVariable final Long userId) {
     try {
@@ -117,7 +117,7 @@ public class ShoppingCartRestController {
 
   private void checkAuthentication(final Principal principal, final Long userId) {
     Long principalUserId = ((UserDetailsImpl) ((UsernamePasswordAuthenticationToken) principal)
-        .getPrincipal()).getUserId();
+        .getPrincipal()).getCustomerId();
 
     if (!principalUserId.equals(userId)) {
       throw new AuthorizationException(

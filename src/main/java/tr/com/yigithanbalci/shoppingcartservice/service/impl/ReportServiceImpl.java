@@ -35,7 +35,7 @@ public class ReportServiceImpl implements ReportService {
     List<Customer> customers = customerRepository.findAll();
     List<CustomerAnalysis> customerAnalysis = new ArrayList<>();
     customers.forEach(customer -> customerAnalysis.add(
-        CustomerAnalysis.builder().username(customer.getUser().getUsername())
+        CustomerAnalysis.builder().username(customer.getUsername())
             .totalAmountOfOrders(customer.getTotalOrders()).build()));
     log.info("Produced Customer Analysis.");
     return customerAnalysis;

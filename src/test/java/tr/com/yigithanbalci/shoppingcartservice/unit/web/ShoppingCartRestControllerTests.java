@@ -9,14 +9,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -52,7 +49,7 @@ public class ShoppingCartRestControllerTests {
   public void testAddToCart() throws Exception {
     UsernamePasswordAuthenticationToken mockPrincipal = Mockito.mock(UsernamePasswordAuthenticationToken.class);
     UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
-    Mockito.when(userDetails.getUserId()).thenReturn(1L);
+    Mockito.when(userDetails.getCustomerId()).thenReturn(1L);
     Mockito.when(mockPrincipal.getPrincipal()).thenReturn(userDetails);
 
     Item americano = new Item(Drink.builder().name("Americano").price(4.0f).build());
@@ -79,7 +76,7 @@ public class ShoppingCartRestControllerTests {
     String requestJson = ow.writeValueAsString(latte);
 
     mockMvc.perform(
-        MockMvcRequestBuilders.put("/users/1/cart")
+        MockMvcRequestBuilders.post("/users/1/cart")
             .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal).content(requestJson))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.amount", is((double)itemAddedCart.getAmount())))
@@ -90,7 +87,7 @@ public class ShoppingCartRestControllerTests {
   public void testDeleteFromCart() throws Exception {
     UsernamePasswordAuthenticationToken mockPrincipal = Mockito.mock(UsernamePasswordAuthenticationToken.class);
     UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
-    Mockito.when(userDetails.getUserId()).thenReturn(1L);
+    Mockito.when(userDetails.getCustomerId()).thenReturn(1L);
     Mockito.when(mockPrincipal.getPrincipal()).thenReturn(userDetails);
 
     Item americano = new Item(Drink.builder().name("Americano").price(4.0f).build());
@@ -117,7 +114,7 @@ public class ShoppingCartRestControllerTests {
     String requestJson = ow.writeValueAsString(latte);
 
     mockMvc.perform(
-        MockMvcRequestBuilders.delete("/users/1/cart")
+        MockMvcRequestBuilders.put("/users/1/cart")
             .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal).content(requestJson))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.amount", is((double)cart.getAmount())))
@@ -128,7 +125,7 @@ public class ShoppingCartRestControllerTests {
   public void testCheckoutCart() throws Exception {
     UsernamePasswordAuthenticationToken mockPrincipal = Mockito.mock(UsernamePasswordAuthenticationToken.class);
     UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
-    Mockito.when(userDetails.getUserId()).thenReturn(1L);
+    Mockito.when(userDetails.getCustomerId()).thenReturn(1L);
     Mockito.when(mockPrincipal.getPrincipal()).thenReturn(userDetails);
 
     Item americano = new Item(Drink.builder().name("Americano").price(4.0f).build());
@@ -159,7 +156,7 @@ public class ShoppingCartRestControllerTests {
   public void whenException_thenInternalServerError() throws Exception {
     UsernamePasswordAuthenticationToken mockPrincipal = Mockito.mock(UsernamePasswordAuthenticationToken.class);
     UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
-    Mockito.when(userDetails.getUserId()).thenReturn(1L);
+    Mockito.when(userDetails.getCustomerId()).thenReturn(1L);
     Mockito.when(mockPrincipal.getPrincipal()).thenReturn(userDetails);
 
     Item latte = new Item(Drink.builder().name("Latte").price(5.0f).build());
@@ -175,12 +172,12 @@ public class ShoppingCartRestControllerTests {
     String requestJson = ow.writeValueAsString(latte);
 
     mockMvc.perform(
-        MockMvcRequestBuilders.put("/users/1/cart")
+        MockMvcRequestBuilders.post("/users/1/cart")
             .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal).content(requestJson))
         .andExpect(status().isInternalServerError());
 
     mockMvc.perform(
-        MockMvcRequestBuilders.delete("/users/1/cart")
+        MockMvcRequestBuilders.put("/users/1/cart")
             .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal).content(requestJson))
         .andExpect(status().isInternalServerError());
 
@@ -194,7 +191,7 @@ public class ShoppingCartRestControllerTests {
   public void whenUnAuthorized_thenUnAuthorized() throws Exception {
     UsernamePasswordAuthenticationToken mockPrincipal = Mockito.mock(UsernamePasswordAuthenticationToken.class);
     UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
-    Mockito.when(userDetails.getUserId()).thenReturn(1L);
+    Mockito.when(userDetails.getCustomerId()).thenReturn(1L);
     Mockito.when(mockPrincipal.getPrincipal()).thenReturn(userDetails);
 
     Item latte = new Item(Drink.builder().name("Latte").price(5.0f).build());
@@ -206,12 +203,12 @@ public class ShoppingCartRestControllerTests {
     String requestJson = ow.writeValueAsString(latte);
 
     mockMvc.perform(
-        MockMvcRequestBuilders.put("/users/2/cart")
+        MockMvcRequestBuilders.post("/users/2/cart")
             .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal).content(requestJson))
         .andExpect(status().isUnauthorized());
 
     mockMvc.perform(
-        MockMvcRequestBuilders.delete("/users/2/cart")
+        MockMvcRequestBuilders.put("/users/2/cart")
             .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal).content(requestJson))
         .andExpect(status().isUnauthorized());
 
@@ -225,7 +222,7 @@ public class ShoppingCartRestControllerTests {
   public void whenCustomerNotFound_thenNotFound() throws Exception {
     UsernamePasswordAuthenticationToken mockPrincipal = Mockito.mock(UsernamePasswordAuthenticationToken.class);
     UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
-    Mockito.when(userDetails.getUserId()).thenReturn(1L);
+    Mockito.when(userDetails.getCustomerId()).thenReturn(1L);
     Mockito.when(mockPrincipal.getPrincipal()).thenReturn(userDetails);
 
     given(shoppingService.checkoutCart(1L)).willThrow(new CustomerNotFoundException("test"));

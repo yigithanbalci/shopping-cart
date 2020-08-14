@@ -1,5 +1,11 @@
 package tr.com.yigithanbalci.shoppingcartservice.web;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +30,16 @@ public class ProductsCustomerRestController {
   private final DrinkService drinkService;
   private final ToppingService toppingService;
 
+  @Operation(summary = "Get list of all toppings.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Found toppings.",
+          content = {@Content(mediaType = "application/json",
+              array = @ArraySchema(schema = @Schema(implementation = ToppingEntity.class)))}),
+      @ApiResponse(responseCode = "404", description = "Toppings not found.",
+          content = @Content),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @GetMapping("/toppings")
   public ResponseEntity<List<ToppingEntity>> getAllToppings(){
     try {
@@ -38,6 +54,16 @@ public class ProductsCustomerRestController {
     }
   }
 
+  @Operation(summary = "Get list of all drinks.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Found drinks.",
+          content = {@Content(mediaType = "application/json",
+              array = @ArraySchema(schema = @Schema(implementation = DrinkEntity.class)))}),
+      @ApiResponse(responseCode = "404", description = "Drinks not found.",
+          content = @Content),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @GetMapping("/drinks")
   public ResponseEntity<List<DrinkEntity>> getAllDrinks(){
     try {

@@ -21,7 +21,7 @@ public class ToppingServiceImpl implements ToppingService {
   @Override
   public ToppingEntity create(ToppingEntity toppingEntity) {
     log.info("Creating a topping: " + toppingEntity.getName());
-    toppingEntity.setId(null);
+    toppingEntity.setId(0);
     ToppingEntity createdTopping = repository.save(toppingEntity);
     log.info("Created a topping: " + toppingEntity.getName());
     return createdTopping;

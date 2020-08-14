@@ -1,5 +1,11 @@
 package tr.com.yigithanbalci.shoppingcartservice.web;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,25 +26,44 @@ public class ReportsRestController {
 
   private final ReportService service;
 
+  @Operation(summary = "Get total orders per user.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Customers analysed.",
+          content = {@Content(mediaType = "application/json",
+              array = @ArraySchema(schema = @Schema(implementation = CustomerAnalysis.class)))}),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @GetMapping("/users/total-orders")
-  public ResponseEntity<List<CustomerAnalysis>> getTotalOrderByUser(){
+  public ResponseEntity<List<CustomerAnalysis>> getTotalOrderByUser() {
     try {
       List<CustomerAnalysis> customerAnalysis = service.getCustomerAnalysisReport();
       return ResponseEntity.ok(customerAnalysis);
     } catch (Exception e) {
       log.error("Exception occurs while reporting order by user {}", e.getLocalizedMessage(), e);
-      throw new InternalServerException("Order by user could not be reported: " + e.getLocalizedMessage());
+      throw new InternalServerException(
+          "Order by user could not be reported: " + e.getLocalizedMessage());
     }
   }
 
+  @Operation(summary = "Get most used toppings for drinks.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Drinks and toppings analysed.",
+          content = {@Content(mediaType = "application/json",
+              array = @ArraySchema(schema = @Schema(implementation = DrinkAndMostUsedTopping.class)))}),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @GetMapping("/drinks/most-used-topping")
-  public ResponseEntity<List<DrinkAndMostUsedTopping>> getMostUsedToppingsForDrinks(){
+  public ResponseEntity<List<DrinkAndMostUsedTopping>> getMostUsedToppingsForDrinks() {
     try {
       List<DrinkAndMostUsedTopping> drinkAnalysis = service.getDrinkAnalysisReport();
       return ResponseEntity.ok(drinkAnalysis);
     } catch (Exception e) {
-      log.error("Exception occurs while reporting toppings by drink {}", e.getLocalizedMessage(), e);
-      throw new InternalServerException("Toppings by drink could not be reported: " + e.getLocalizedMessage());
+      log.error("Exception occurs while reporting toppings by drink {}", e.getLocalizedMessage(),
+          e);
+      throw new InternalServerException(
+          "Toppings by drink could not be reported: " + e.getLocalizedMessage());
     }
   }
 }

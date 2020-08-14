@@ -23,7 +23,7 @@ public class DrinkToppingRelation {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "drinkRelationSeqGen")
   @SequenceGenerator(name = "drinkRelationSeqGen", sequenceName = "drinkRelation_sequence")
-  private Long id;
+  private long id;
 
   @Column
   private Long drinkId;

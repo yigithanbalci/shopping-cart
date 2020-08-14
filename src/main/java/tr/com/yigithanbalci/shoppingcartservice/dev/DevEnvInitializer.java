@@ -3,9 +3,9 @@ package tr.com.yigithanbalci.shoppingcartservice.dev;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.model.Customer;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
@@ -16,6 +16,7 @@ import tr.com.yigithanbalci.shoppingcartservice.repository.UserRepository;
 
 @Slf4j
 @Component
+@Profile("dev")
 @RequiredArgsConstructor
 public class DevEnvInitializer {
 

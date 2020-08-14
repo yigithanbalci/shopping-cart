@@ -1,5 +1,10 @@
 package tr.com.yigithanbalci.shoppingcartservice.web;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +33,16 @@ public class ShoppingCartRestController {
 
   private final ShoppingService shoppingService;
 
+  @Operation(summary = "Add item to Cart.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Item added to cart and cart returned.",
+          content = {@Content(mediaType = "application/json",
+              schema = @Schema(implementation = Cart.class))}),
+      @ApiResponse(responseCode = "401", description = "Unauthorized or authentication and path variable are not the same.",
+          content = @Content),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @PutMapping("/{userId}/cart")
   public ResponseEntity<Cart> addItemToCart(final Principal principal, @RequestBody final Item item,
       @PathVariable final Long userId) {
@@ -44,6 +59,16 @@ public class ShoppingCartRestController {
     }
   }
 
+  @Operation(summary = "Delete item from Cart.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Item deleted from cart and cart returned.",
+          content = {@Content(mediaType = "application/json",
+              schema = @Schema(implementation = Cart.class))}),
+      @ApiResponse(responseCode = "401", description = "Unauthorized or authentication and path variable are not the same.",
+          content = @Content),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @DeleteMapping("/{userId}/cart")
   public ResponseEntity<Cart> deleteItemFromCart(final Principal principal, @RequestBody final Item item,
       @PathVariable final Long userId) {
@@ -60,6 +85,18 @@ public class ShoppingCartRestController {
     }
   }
 
+  @Operation(summary = "Checkout the cart.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Cart checked out, total amount and discount amount returned.",
+          content = {@Content(mediaType = "application/json",
+              schema = @Schema(implementation = Cart.class))}),
+      @ApiResponse(responseCode = "401", description = "Unauthorized or authentication and path variable are not the same.",
+          content = @Content),
+      @ApiResponse(responseCode = "404", description = "Customer not found.",
+          content = @Content),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @PutMapping("/{userId}/cart/checkout")
   public ResponseEntity<FinalizedCart> checkoutShoppingCart(final Principal principal, @PathVariable final Long userId) {
     try {

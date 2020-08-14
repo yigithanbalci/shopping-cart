@@ -21,7 +21,7 @@ public class DrinkServiceImpl implements DrinkService {
   @Override
   public DrinkEntity create(DrinkEntity drinkEntity) {
     log.info("Creating a drink: " + drinkEntity.getName());
-    drinkEntity.setId(null);
+    drinkEntity.setId(0);
     DrinkEntity createdDrink = repository.save(drinkEntity);
     log.info("Created a drink: " + drinkEntity.getName());
     return createdDrink;

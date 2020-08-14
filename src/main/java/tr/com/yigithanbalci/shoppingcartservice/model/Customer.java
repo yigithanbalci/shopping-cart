@@ -26,7 +26,7 @@ public class Customer implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customerSeqGen")
   @SequenceGenerator(name = "customerSeqGen", sequenceName = "customer_sequence")
-  private Long id;
+  private long id;
 
   @OneToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "user_id", nullable = false)

@@ -25,7 +25,7 @@ public class DrinkEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dringSeqGen")
   @SequenceGenerator(name = "dringSeqGen", sequenceName = "drink_sequence")
-  private Long id;
+  private long id;
 
   @Column
   private String name;

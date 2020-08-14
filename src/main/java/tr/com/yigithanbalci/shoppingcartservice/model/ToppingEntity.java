@@ -24,7 +24,7 @@ public class ToppingEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "toppingSeqGen")
     @SequenceGenerator(name = "toppingSeqGen", sequenceName = "topping_sequence")
-    private Long id;
+    private long id;
 
     @Column
     private String name;

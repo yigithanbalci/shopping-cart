@@ -54,7 +54,7 @@ public class DrinkServiceTests {
 
     String name = "Latte";
     DrinkEntity java = DrinkEntity.builder().id(5L).name("Java").price(7.0f).build();
-    DrinkEntity found = drinkService.findAll().stream().filter(drinkEntity -> drinkEntity.getId().equals(2L)).findFirst().orElse(java);
+    DrinkEntity found = drinkService.findAll().stream().filter(drinkEntity -> drinkEntity.getId() == 2L).findFirst().orElse(java);
 
     assertThat(found.getName()).isEqualTo(name);
   }

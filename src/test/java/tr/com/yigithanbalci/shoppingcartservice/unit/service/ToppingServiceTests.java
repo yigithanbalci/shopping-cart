@@ -58,7 +58,7 @@ public class ToppingServiceTests {
     ToppingEntity mapleSyrup = ToppingEntity.builder().id(5L).name("Maple syrup").price(3.0f)
         .build();
     ToppingEntity found = toppingService.findAll().stream()
-        .filter(toppingEntity -> toppingEntity.getId().equals(1L)).findFirst().orElse(mapleSyrup);
+        .filter(toppingEntity -> toppingEntity.getId() == 1L).findFirst().orElse(mapleSyrup);
 
     assertThat(found.getName()).isEqualTo(name);
   }

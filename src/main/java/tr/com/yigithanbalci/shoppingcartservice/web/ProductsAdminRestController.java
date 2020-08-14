@@ -1,5 +1,10 @@
 package tr.com.yigithanbalci.shoppingcartservice.web;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +34,14 @@ public class ProductsAdminRestController {
   private final DrinkService drinkService;
   private final ToppingService toppingService;
 
+  @Operation(summary = "Create a drink.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Created drink.",
+          content = {@Content(mediaType = "application/json",
+              schema = @Schema(implementation = DrinkEntity.class))}),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @PostMapping("/drinks")
   public ResponseEntity<DrinkEntity> createDrink(@RequestBody final Drink drink) {
     try {
@@ -40,6 +53,14 @@ public class ProductsAdminRestController {
     }
   }
 
+  @Operation(summary = "Create a topping.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Created topping.",
+          content = {@Content(mediaType = "application/json",
+              schema = @Schema(implementation = ToppingEntity.class))}),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @PostMapping("/toppings")
   public ResponseEntity<ToppingEntity> createTopping(@RequestBody final Topping topping) {
     try {
@@ -52,6 +73,16 @@ public class ProductsAdminRestController {
     }
   }
 
+  @Operation(summary = "Update a drink.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Updated drink.",
+          content = {@Content(mediaType = "application/json",
+              schema = @Schema(implementation = DrinkEntity.class))}),
+      @ApiResponse(responseCode = "404", description = "Drink not found.",
+          content = @Content),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @PutMapping("/drinks/{drinkId}")
   public ResponseEntity<DrinkEntity> updateDrink(@RequestBody final Drink drink,
       @PathVariable final Long drinkId) {
@@ -69,6 +100,16 @@ public class ProductsAdminRestController {
     }
   }
 
+  @Operation(summary = "Update a topping.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Updated topping.",
+          content = {@Content(mediaType = "application/json",
+              schema = @Schema(implementation = ToppingEntity.class))}),
+      @ApiResponse(responseCode = "404", description = "Topping not found.",
+          content = @Content),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @PutMapping("/toppings/{toppingId}")
   public ResponseEntity<ToppingEntity> updateTopping(@RequestBody final Topping topping,
       @PathVariable final Long toppingId) {
@@ -87,6 +128,13 @@ public class ProductsAdminRestController {
     }
   }
 
+  @Operation(summary = "Delete a drink.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Deleted drink.",
+          content = @Content),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @DeleteMapping("/drinks/{drinkId}")
   public ResponseEntity<Void> deleteDrink(@PathVariable final Long drinkId) {
     try {
@@ -99,6 +147,13 @@ public class ProductsAdminRestController {
     return ResponseEntity.ok().build();
   }
 
+  @Operation(summary = "Delete a topping.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Deleted topping.",
+          content = @Content),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error Occured.",
+          content = @Content)
+  })
   @DeleteMapping("/toppings/{toppingId}")
   public ResponseEntity<Void> deleteTopping(@PathVariable final Long toppingId) {
     try {

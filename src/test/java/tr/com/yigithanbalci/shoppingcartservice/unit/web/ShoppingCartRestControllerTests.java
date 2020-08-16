@@ -172,7 +172,7 @@ public class ShoppingCartRestControllerTests {
     given(shoppingService.checkoutCart(1L)).willReturn(finalizedCart);
 
     mockMvc.perform(
-        MockMvcRequestBuilders.put("/users/1/cart/checkout")
+        MockMvcRequestBuilders.get("/users/1/cart/checkout")
             .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal))
         .andExpect(status().isOk())
         .andExpect(
@@ -213,7 +213,7 @@ public class ShoppingCartRestControllerTests {
         .andExpect(status().isUnauthorized());
 
     mockMvc.perform(
-        MockMvcRequestBuilders.put("/users/2/cart/checkout")
+        MockMvcRequestBuilders.get("/users/2/cart/checkout")
             .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal))
         .andExpect(status().isUnauthorized());
   }
@@ -229,7 +229,7 @@ public class ShoppingCartRestControllerTests {
     given(shoppingService.checkoutCart(1L)).willThrow(new EntityNotFoundException("test"));
 
     assertThatThrownBy(() -> mockMvc.perform(
-        MockMvcRequestBuilders.put("/users/1/cart/checkout")
+        MockMvcRequestBuilders.get("/users/1/cart/checkout")
             .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal)))
         .hasCause(new EntityNotFoundException("test"));
   }

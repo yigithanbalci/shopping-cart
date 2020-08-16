@@ -3,6 +3,7 @@ package tr.com.yigithanbalci.shoppingcartservice.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,10 +52,10 @@ public class ReportServiceImpl implements ReportService {
     drinks.forEach(drinkEntity -> {
       DrinkToppingRelation topByDrinkIdEqualsOrderByAmount = drinkToppingRelationRepository
           .findTopByDrinkIdEqualsOrderByNumberOfUsageTogetherDesc(drinkEntity.getId());
-      drinkAnalysis.add(
+      Optional.ofNullable(topByDrinkIdEqualsOrderByAmount).ifPresent(drinkToppingRelation -> drinkAnalysis.add(
           DrinkAndMostUsedTopping.createWithDrinkAndMostUsedTopping(drinkEntity.getName(),
-              toppingRepository.findById(topByDrinkIdEqualsOrderByAmount.getToppingId()).orElse(
-                  ToppingEntity.createWithNameAndPrice("none", BigDecimal.ZERO)).getName()));
+              toppingRepository.findById(drinkToppingRelation.getToppingId()).orElse(
+                  ToppingEntity.createWithNameAndPrice("none", BigDecimal.ZERO)).getName())));
     });
     log.debug("Produced Drink Analysis.");
     return drinkAnalysis;

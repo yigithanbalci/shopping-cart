@@ -42,7 +42,7 @@ public class Customer implements Serializable {
 
   @Column
   @PositiveOrZero(message = ORDER_POSITIVE_OR_ZERO)
-  private BigDecimal totalAmountOfOrders;
+  private BigDecimal totalAmountOfOrders = BigDecimal.ZERO;
 
   private transient static final String ORDER_POSITIVE_OR_ZERO = "Total amount of orders are atleast zero";
 

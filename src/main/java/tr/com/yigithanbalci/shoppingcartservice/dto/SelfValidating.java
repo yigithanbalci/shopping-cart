@@ -6,7 +6,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-public abstract class SelfValidating<T> {
+public class SelfValidating<T> {
 
   private transient Validator validator;
 

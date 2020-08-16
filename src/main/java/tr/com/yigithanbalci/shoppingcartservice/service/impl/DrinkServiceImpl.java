@@ -3,6 +3,7 @@ package tr.com.yigithanbalci.shoppingcartservice.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +33,7 @@ public class DrinkServiceImpl implements DrinkService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public Drink update(Drink drink) {
+  public Drink update(@NonNull Drink drink) {
     log.debug("Updating a drink: " + drink.getName());
     DrinkEntity retrievedDrink = repository.findById(drink.getId())
         .orElseThrow(
@@ -46,14 +47,14 @@ public class DrinkServiceImpl implements DrinkService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public void delete(Long id) {
+  public void delete(@NonNull Long id) {
     log.debug("Deleting a drink: " + id);
     repository.deleteById(id);
     log.debug("Deleted a drink: " + id);
   }
 
   @Override
-  public Drink findById(Long id) {
+  public Drink findById(@NonNull Long id) {
     return Drink.from(repository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Drink not found with id: " + id)));
   }

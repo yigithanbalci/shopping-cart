@@ -61,7 +61,7 @@ public class ShoppingServiceImpl implements ShoppingService {
     updateDrinkToppingRelation(cart);
     Customer customer = customerRepository.findById(userId)
         .orElseThrow(() -> new EntityNotFoundException("Customer not found with id: " + userId));
-    customer.setTotalAmountOfOrders(customer.getTotalAmountOfOrders().add(BigDecimal.ONE));
+    customer.setTotalAmountOfOrders(customer.getTotalAmountOfOrders().add(finalizedCart.getDiscountedAmount()));
     customerRepository.save(customer);
     log.debug("Finished to checkout cart of user with id: " + userId);
     return finalizedCart;

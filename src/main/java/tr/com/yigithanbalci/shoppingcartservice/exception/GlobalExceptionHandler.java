@@ -2,6 +2,7 @@ package tr.com.yigithanbalci.shoppingcartservice.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.EntityNotFoundException;
@@ -88,6 +89,20 @@ public class GlobalExceptionHandler {
       log.error("Json Processing error: {} ", jsonProcessingException.getLocalizedMessage(),
           jsonProcessingException);
       return ResponseEntity.badRequest().build();
+    }
+  }
+
+  @ExceptionHandler(MismatchedInputException.class)
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleMismatchedException(MismatchedInputException e) {
+    log.error("Mismatched error: {} ", e.getLocalizedMessage(), e);
+    try {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body(objectMapper.writeValueAsString(e.getLocalizedMessage()));
+    } catch (JsonProcessingException jsonProcessingException) {
+      log.error("Json Processing error: {} ", jsonProcessingException.getLocalizedMessage(),
+          jsonProcessingException);
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
   }
 

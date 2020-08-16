@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class DrinkInput implements Serializable {
+public class DrinkInput extends SelfValidating<DrinkInput> implements Serializable {
 
   @NotBlank(message = "Name is not blank")
   private final String name;
@@ -22,8 +22,10 @@ public class DrinkInput implements Serializable {
   private final BigDecimal amount;
 
   @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-  public DrinkInput(@JsonProperty("name") String name, @JsonProperty("amount") BigDecimal amount) {
+  public DrinkInput(@JsonProperty(value = "name", required = true) String name,
+      @JsonProperty(value = "amount", required = true) BigDecimal amount) {
     this.name = name;
     this.amount = amount;
+    this.validateSelf();
   }
 }

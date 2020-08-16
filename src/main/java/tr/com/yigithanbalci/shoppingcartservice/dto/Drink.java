@@ -9,6 +9,7 @@ import javax.validation.constraints.Positive;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
@@ -22,9 +23,11 @@ public class Drink extends SelfValidating<Drink> implements Serializable {
   @Positive(message = "Id is positive")
   private final Long id;
 
+  @NonNull
   @NotBlank(message = "Name is not blank")
   private final String name;
 
+  @NonNull
   @Positive(message = "Amount is positive or zero")
   private final BigDecimal amount;
 
@@ -33,10 +36,10 @@ public class Drink extends SelfValidating<Drink> implements Serializable {
   }
 
   @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-  public static Drink createWithIdAndNameAndPrice(@JsonProperty("id") Long id,
+  public static Drink createWithIdAndNameAndPrice(@NonNull @JsonProperty("id") Long id,
       @JsonProperty("name") String name,
-      @JsonProperty("price") BigDecimal price) {
-    Drink drink = new Drink(id, name, price);
+      @JsonProperty("amount") BigDecimal amount) {
+    Drink drink = new Drink(id, name, amount);
     drink.validateSelf();
     return drink;
   }

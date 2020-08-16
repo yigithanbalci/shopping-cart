@@ -2,6 +2,7 @@ package tr.com.yigithanbalci.shoppingcartservice.repository.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.repository.CartRepository;
@@ -9,7 +10,7 @@ import tr.com.yigithanbalci.shoppingcartservice.repository.CartRepository;
 @Repository
 public class CartRepositoryImpl implements CartRepository {
 
-  private Map<Long, Cart> inMemoryCartMap = new HashMap<>();
+  private Map<Long, Cart> inMemoryCartMap = new ConcurrentHashMap<>();
 
   @Override
   public Cart findByUserId(Long userId) {

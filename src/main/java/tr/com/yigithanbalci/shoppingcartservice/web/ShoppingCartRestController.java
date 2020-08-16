@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import tr.com.yigithanbalci.shoppingcartservice.auth.UserDetailsImpl;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
-import tr.com.yigithanbalci.shoppingcartservice.dto.Item;
+import tr.com.yigithanbalci.shoppingcartservice.dto.ItemInput;
 import tr.com.yigithanbalci.shoppingcartservice.exception.AuthorizationException;
 import tr.com.yigithanbalci.shoppingcartservice.exception.CustomerNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.exception.InternalServerException;
+import tr.com.yigithanbalci.shoppingcartservice.security.UserDetailsImpl;
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 
 @Slf4j
@@ -44,7 +44,7 @@ public class ShoppingCartRestController {
           content = @Content)
   })
   @PostMapping("/{userId}/cart")
-  public ResponseEntity<Cart> addItemToCart(final Principal principal, @RequestBody final Item item,
+  public ResponseEntity<Cart> addItemToCart(final Principal principal, @RequestBody final ItemInput item,
       @PathVariable final Long userId) {
     try {
       checkAuthentication(principal, userId);
@@ -70,7 +70,7 @@ public class ShoppingCartRestController {
           content = @Content)
   })
   @PutMapping("/{userId}/cart")
-  public ResponseEntity<Cart> deleteItemFromCart(final Principal principal, @RequestBody final Item item,
+  public ResponseEntity<Cart> deleteItemFromCart(final Principal principal, @RequestBody final ItemInput item,
       @PathVariable final Long userId) {
     try {
       checkAuthentication(principal, userId);

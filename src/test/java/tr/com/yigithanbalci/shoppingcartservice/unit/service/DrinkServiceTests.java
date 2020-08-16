@@ -3,6 +3,7 @@ package tr.com.yigithanbalci.shoppingcartservice.unit.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
+import tr.com.yigithanbalci.shoppingcartservice.dto.DrinkInput;
 import tr.com.yigithanbalci.shoppingcartservice.exception.DrinkNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkRepository;
@@ -39,10 +42,10 @@ public class DrinkServiceTests {
 
   @Test
   public void whenValidName_thenDrinkShouldBeFound(){
-    DrinkEntity blackCoffee = DrinkEntity.builder().id(1L).name("Black Coffee").price(4.0f).build();
-    DrinkEntity latte = DrinkEntity.builder().id(2L).name("Latte").price(5.0f).build();
-    DrinkEntity mocha = DrinkEntity.builder().id(3L).name("Mocha").price(6.0f).build();
-    DrinkEntity tea = DrinkEntity.builder().id(4L).name("Tea").price(3.0f).build();
+    DrinkEntity blackCoffee = new DrinkEntity(1L, "Black Coffee", BigDecimal.valueOf(4.0));
+    DrinkEntity latte = new DrinkEntity(2L, "Latte", BigDecimal.valueOf(5.0));
+    DrinkEntity mocha = new DrinkEntity(3L, "Mocha", BigDecimal.valueOf(6.0));
+    DrinkEntity tea = new DrinkEntity(4L, "Tea", BigDecimal.valueOf(3.0));
 
     List<DrinkEntity> drinks = new ArrayList<>();
     drinks.add(blackCoffee);
@@ -53,8 +56,8 @@ public class DrinkServiceTests {
     Mockito.when(drinkRepository.findAll()).thenReturn(drinks);
 
     String name = "Latte";
-    DrinkEntity java = DrinkEntity.builder().id(5L).name("Java").price(7.0f).build();
-    DrinkEntity found = drinkService.findAll().stream().filter(drinkEntity -> drinkEntity.getId() == 2L).findFirst().orElse(java);
+    Drink java = Drink.createWithIdAndNameAndPrice(5L, "Java", BigDecimal.valueOf(7.0));
+    Drink found = drinkService.findAll().stream().filter(drinkEntity -> drinkEntity.getId() == 2L).findFirst().orElse(java);
 
     assertThat(found.getName()).isEqualTo(name);
   }
@@ -62,23 +65,20 @@ public class DrinkServiceTests {
   // These functions below directly comes from jpa repo.
   @Test
   public void crudTest(){
-    DrinkEntity java = DrinkEntity.builder().id(5L).name("Java").price(7.0f).build();
-    DrinkEntity updatedJava = DrinkEntity.builder().id(5L).name("Java").price(5.0f).build();
-    Mockito.when(drinkRepository.findById(5L)).thenReturn(Optional.of(java));
-    Mockito.when(drinkRepository.save(java)).thenReturn(java);
+    Drink java = Drink.createWithIdAndNameAndPrice(5L, "Java", BigDecimal.valueOf(7.0));
+    Drink updatedJava = Drink.createWithIdAndNameAndPrice(5L, "Java", BigDecimal.valueOf(5.0));
+    Mockito.when(drinkRepository.findById(5L)).thenReturn(Optional.of(DrinkEntity.from(java)));
+    Mockito.when(drinkRepository.save(DrinkEntity.from(java))).thenReturn(DrinkEntity.from(java));
 
-    DrinkEntity savedDrink = drinkService.create(java);
-    Mockito.verify(drinkRepository, Mockito.times(1)).save(java);
+    Drink savedDrink = drinkService.create(new DrinkInput(java.getName(), java.getAmount()));
+    Mockito.verify(drinkRepository, Mockito.times(1)).save(DrinkEntity.from(java));
     assertThat(savedDrink.getName()).isEqualTo(java.getName());
 
-    java.setId(5L);
-    java.setPrice(5.0f);
-    Mockito.when(drinkRepository.save(updatedJava)).thenReturn(updatedJava);
-    DrinkEntity updatedDrink = drinkService.update(java);
-    Mockito.verify(drinkRepository, Mockito.times(2)).save(java);
-    assertThat(updatedDrink.getPrice()).isEqualTo(updatedJava.getPrice());
+    Mockito.when(drinkRepository.save(DrinkEntity.from(updatedJava))).thenReturn(DrinkEntity.from(updatedJava));
+    Drink updatedDrink = drinkService.update(updatedJava);
+    Mockito.verify(drinkRepository, Mockito.times(1)).save(DrinkEntity.from(java));
+    assertThat(updatedDrink.getAmount()).isEqualTo(updatedJava.getAmount());
 
-    java.setId(5L);
     drinkService.delete(java.getId());
     Mockito.verify(drinkRepository, Mockito.times(1)).deleteById(java.getId());
   }

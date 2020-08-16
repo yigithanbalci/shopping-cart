@@ -1,10 +1,13 @@
 package tr.com.yigithanbalci.shoppingcartservice.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
+import tr.com.yigithanbalci.shoppingcartservice.dto.DrinkInput;
 import tr.com.yigithanbalci.shoppingcartservice.exception.DrinkNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkRepository;
@@ -19,44 +22,50 @@ public class DrinkServiceImpl implements DrinkService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public DrinkEntity create(DrinkEntity drinkEntity) {
-    log.info("Creating a drink: " + drinkEntity.getName());
-    drinkEntity.setId(0);
-    DrinkEntity createdDrink = repository.save(drinkEntity);
-    log.info("Created a drink: " + drinkEntity.getName());
-    return createdDrink;
+  public Drink create(DrinkInput drinkInput) {
+    log.debug("Creating a drink: " + drinkInput.getName());
+    DrinkEntity createdDrink = repository.save(DrinkEntity
+        .createWithNameAndPrice(drinkInput.getName(), drinkInput.getAmount()));
+    log.debug("Created a drink: " + drinkInput.getName());
+    return Drink.from(createdDrink);
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public DrinkEntity update(DrinkEntity drinkEntity) {
-    log.info("Updating a drink: " + drinkEntity.getName());
-    DrinkEntity retrieved = repository.findById(drinkEntity.getId())
+  public Drink update(Drink drink) {
+    log.debug("Updating a drink: " + drink.getName());
+    DrinkEntity retrievedDrink = repository.findById(drink.getId())
         .orElseThrow(
-            () -> new DrinkNotFoundException("Drink not found with id: " + drinkEntity.getId()));
-    retrieved.setName(drinkEntity.getName());
-    retrieved.setPrice(drinkEntity.getPrice());
-    DrinkEntity updatedDrink = repository.save(drinkEntity);
-    log.info("Updated a drink: " + drinkEntity.getName());
-    return updatedDrink;
+            () -> new DrinkNotFoundException("Drink not found with id: " + drink.getId()));
+    retrievedDrink.setName(drink.getName());
+    retrievedDrink.setAmount(drink.getAmount());
+    DrinkEntity updatedDrink = repository.save(retrievedDrink);
+    log.debug("Updated a drink: " + drink.getName());
+    return Drink.from(updatedDrink);
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
   public void delete(Long id) {
-    log.info("Deleting a drink: " + id);
+    log.debug("Deleting a drink: " + id);
     repository.deleteById(id);
-    log.info("Deleted a drink: " + id);
+    log.debug("Deleted a drink: " + id);
   }
 
   @Override
-  public List<DrinkEntity> findAll() {
-    log.info("Retrieving all drinks");
+  public Drink findById(Long id) {
+    return Drink.from(repository.findById(id)
+        .orElseThrow(() -> new DrinkNotFoundException("Drink not found with id: " + id)));
+  }
+
+  @Override
+  public List<Drink> findAll() {
+    log.debug("Retrieving all drinks");
     List<DrinkEntity> all = repository.findAll();
     if (all.isEmpty()) {
       throw new DrinkNotFoundException("Not found any drinks in database.");
     }
-    log.info("Retrieved all drink");
-    return all;
+    log.debug("Retrieved all drink");
+    return all.stream().map(Drink::from).collect(Collectors.toList());
   }
 }

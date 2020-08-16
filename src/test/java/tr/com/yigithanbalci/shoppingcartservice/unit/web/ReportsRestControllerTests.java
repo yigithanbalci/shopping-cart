@@ -6,9 +6,9 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,10 +40,8 @@ public class ReportsRestControllerTests {
   @Test
   public void testCustomerReport() throws Exception {
     List<CustomerAnalysis> customerAnalysis = new ArrayList<>();
-    CustomerAnalysis yigit = CustomerAnalysis.builder()
-        .username("yigit").totalAmountOfOrders(3L).build();
-    CustomerAnalysis ali = CustomerAnalysis.builder()
-        .username("ali").totalAmountOfOrders(4L).build();
+    CustomerAnalysis yigit = CustomerAnalysis.createWithUsernameAndTotalOrders("yigit", BigDecimal.valueOf(15.0));
+    CustomerAnalysis ali = CustomerAnalysis.createWithUsernameAndTotalOrders("ali", BigDecimal.valueOf(20.0));
     customerAnalysis.add(yigit);
     customerAnalysis.add(ali);
 
@@ -55,16 +53,14 @@ public class ReportsRestControllerTests {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(2)))
         .andExpect(jsonPath("$[0].username", is(yigit.getUsername())))
-    .andExpect(jsonPath("$[0].totalAmountOfOrders", is(3)));
+        .andExpect(jsonPath("$[0].totalAmountOfOrders", is(yigit.getTotalAmountOfOrders().doubleValue())));
   }
 
   @Test
   public void testDrinkReport() throws Exception {
     List<DrinkAndMostUsedTopping> drinkAndMostUsedToppings = new ArrayList<>();
-    DrinkAndMostUsedTopping tea = DrinkAndMostUsedTopping.builder()
-        .drink("Tea").mostUsedTopping("Lemon").build();
-    DrinkAndMostUsedTopping latte = DrinkAndMostUsedTopping.builder()
-        .drink("Latte").mostUsedTopping("Milk").build();
+    DrinkAndMostUsedTopping tea = DrinkAndMostUsedTopping.createWithDrinkAndMostUsedTopping("Tea", "Lemon");
+    DrinkAndMostUsedTopping latte = DrinkAndMostUsedTopping.createWithDrinkAndMostUsedTopping("Latte", "Milk");
     drinkAndMostUsedToppings.add(tea);
     drinkAndMostUsedToppings.add(latte);
 

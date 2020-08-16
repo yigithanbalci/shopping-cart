@@ -5,9 +5,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
+import tr.com.yigithanbalci.shoppingcartservice.dto.DrinkInput;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
+import tr.com.yigithanbalci.shoppingcartservice.dto.ToppingInput;
 import tr.com.yigithanbalci.shoppingcartservice.exception.DrinkNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.exception.InternalServerException;
 import tr.com.yigithanbalci.shoppingcartservice.exception.ToppingNotFoundException;
@@ -26,6 +31,7 @@ import tr.com.yigithanbalci.shoppingcartservice.service.DrinkService;
 import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
 
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/admin/products")
 @RequiredArgsConstructor
@@ -43,10 +49,10 @@ public class ProductsAdminRestController {
           content = @Content)
   })
   @PostMapping("/drinks")
-  public ResponseEntity<DrinkEntity> createDrink(@RequestBody final Drink drink) {
+  public ResponseEntity<Drink> createDrink(@Valid @RequestBody final DrinkInput drink) {
     try {
-      DrinkEntity drinkEntity = drinkService.create(DrinkEntity.from(drink));
-      return ResponseEntity.ok(drinkEntity);
+      Drink createdDrink = drinkService.create(drink);
+      return ResponseEntity.ok(createdDrink);
     } catch (Exception e) {
       log.error("Exception occurs while creating drink {} : {}", drink, e.getLocalizedMessage(), e);
       throw new InternalServerException("Drink could not be created: " + e.getLocalizedMessage());
@@ -62,10 +68,11 @@ public class ProductsAdminRestController {
           content = @Content)
   })
   @PostMapping("/toppings")
-  public ResponseEntity<ToppingEntity> createTopping(@RequestBody final Topping topping) {
+  public ResponseEntity<Topping> createTopping(
+      @Valid @RequestBody final ToppingInput topping) {
     try {
-      ToppingEntity toppingEntity = toppingService.create(ToppingEntity.from(topping));
-      return ResponseEntity.ok(toppingEntity);
+      Topping createdTopping = toppingService.create(topping);
+      return ResponseEntity.ok(createdTopping);
     } catch (Exception e) {
       log.error("Exception occurs while creating topping {} : {}", topping, e.getLocalizedMessage(),
           e);
@@ -84,13 +91,12 @@ public class ProductsAdminRestController {
           content = @Content)
   })
   @PutMapping("/drinks/{drinkId}")
-  public ResponseEntity<DrinkEntity> updateDrink(@RequestBody final Drink drink,
+  public ResponseEntity<Drink> updateDrink(@Valid @RequestBody final DrinkInput drink,
       @PathVariable final Long drinkId) {
     try {
-      DrinkEntity drinkEntity = DrinkEntity.from(drink);
-      drinkEntity.setId(drinkId);
-      DrinkEntity updatedDrinkEntity = drinkService.update(drinkEntity);
-      return ResponseEntity.ok(updatedDrinkEntity);
+      Drink updatedDrink = drinkService
+          .update(Drink.createWithIdAndNameAndPrice(drinkId, drink.getName(), drink.getAmount()));
+      return ResponseEntity.ok(updatedDrink);
     } catch (DrinkNotFoundException e) {
       log.error("Drink not found with Id: " + drinkId);
       throw e;
@@ -111,13 +117,12 @@ public class ProductsAdminRestController {
           content = @Content)
   })
   @PutMapping("/toppings/{toppingId}")
-  public ResponseEntity<ToppingEntity> updateTopping(@RequestBody final Topping topping,
+  public ResponseEntity<Topping> updateTopping(@Valid @RequestBody final ToppingInput topping,
       @PathVariable final Long toppingId) {
     try {
-      ToppingEntity toppingEntity = ToppingEntity.from(topping);
-      toppingEntity.setId(toppingId);
-      ToppingEntity updatedToppingEntity = toppingService.update(toppingEntity);
-      return ResponseEntity.ok(updatedToppingEntity);
+      Topping updatedTopping = toppingService.update(
+          Topping.createWithIdAndNameAndPrice(toppingId, topping.getName(), topping.getAmount()));
+      return ResponseEntity.ok(updatedTopping);
     } catch (ToppingNotFoundException e) {
       log.error("Topping not found with Id: " + toppingId);
       throw e;
@@ -136,7 +141,8 @@ public class ProductsAdminRestController {
           content = @Content)
   })
   @DeleteMapping("/drinks/{drinkId}")
-  public ResponseEntity<Void> deleteDrink(@PathVariable final Long drinkId) {
+  public ResponseEntity<Void> deleteDrink(
+      @PathVariable @PositiveOrZero(message = "Drink id is positive or zero") final Long drinkId) {
     try {
       drinkService.delete(drinkId);
     } catch (Exception e) {
@@ -155,7 +161,8 @@ public class ProductsAdminRestController {
           content = @Content)
   })
   @DeleteMapping("/toppings/{toppingId}")
-  public ResponseEntity<Void> deleteTopping(@PathVariable final Long toppingId) {
+  public ResponseEntity<Void> deleteTopping(
+      @PathVariable @PositiveOrZero(message = "Topping id is positive or zero") final Long toppingId) {
     try {
       toppingService.delete(toppingId);
     } catch (Exception e) {

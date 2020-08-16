@@ -1,4 +1,4 @@
-package tr.com.yigithanbalci.shoppingcartservice.auth;
+package tr.com.yigithanbalci.shoppingcartservice.security;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -35,7 +35,7 @@ public class UserDetailsImpl implements UserDetails {
   }
 
   public Long getCustomerId() {
-    return user.getCustomerId();
+    return user.getCustomer().getId();
   }
 
   @Override

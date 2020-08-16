@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import tr.com.yigithanbalci.shoppingcartservice.auth.UserDetailsImpl;
+import tr.com.yigithanbalci.shoppingcartservice.security.UserDetailsImpl;
 import tr.com.yigithanbalci.shoppingcartservice.model.User;
 import tr.com.yigithanbalci.shoppingcartservice.repository.UserRepository;
 

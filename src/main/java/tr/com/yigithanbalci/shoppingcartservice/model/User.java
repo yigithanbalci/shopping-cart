@@ -14,7 +14,9 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Builder
@@ -41,9 +43,10 @@ public class User implements Serializable {
   @Column
   private boolean enabled;
 
-  @Column
-  private Long orders;
-
-  @Column
-  private Long customerId;
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
+  @OneToOne(mappedBy = "user",
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY)
+  private Customer customer;
 }

@@ -1,12 +1,14 @@
 package tr.com.yigithanbalci.shoppingcartservice.service;
 
 import java.util.List;
-import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
+import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
+import tr.com.yigithanbalci.shoppingcartservice.dto.DrinkInput;
 
 public interface DrinkService {
 
-  DrinkEntity create(DrinkEntity drinkEntity);
-  DrinkEntity update(DrinkEntity drinkEntity);
+  Drink create(DrinkInput drinkInput);
+  Drink update(Drink drink);
   void delete(Long id);
-  List<DrinkEntity> findAll();
+  Drink findById(Long id);
+  List<Drink> findAll();
 }

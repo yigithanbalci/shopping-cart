@@ -2,6 +2,7 @@ package tr.com.yigithanbalci.shoppingcartservice.unit.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import tr.com.yigithanbalci.shoppingcartservice.model.Customer;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkToppingRelation;
 import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
+import tr.com.yigithanbalci.shoppingcartservice.model.User;
 import tr.com.yigithanbalci.shoppingcartservice.repository.CustomerRepository;
 import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkRepository;
 import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkToppingRelationRepository;
@@ -43,15 +45,9 @@ public class ReportServiceTests {
 
   @BeforeEach
   public void setUp() {
-    Customer josh = Customer.builder().id(1L).userId(1L).username("josh")
-        .totalOrders(5L)
-        .build();
-    Customer jack = Customer.builder().id(2L).userId(2L).username("jack")
-        .totalOrders(8L)
-        .build();
-    Customer jonathan = Customer.builder().id(3L)
-        .userId(3L).username("jonathan")
-        .totalOrders(9L).build();
+    Customer josh = Customer.createWithUserAndTotalOrders(User.builder().id(1L).username("josh").build(), BigDecimal.valueOf(25.0));
+    Customer jack = Customer.createWithUserAndTotalOrders(User.builder().id(2L).username("josh").build(), BigDecimal.valueOf(20.0));
+    Customer jonathan = Customer.createWithUserAndTotalOrders(User.builder().id(3L).username("josh").build(), BigDecimal.valueOf(15.0));
 
     List<Customer> customers = new ArrayList<>();
     customers.add(josh);
@@ -60,8 +56,8 @@ public class ReportServiceTests {
 
     Mockito.when(customerRepository.findAll()).thenReturn(customers);
 
-    DrinkEntity blackCoffee = DrinkEntity.builder().id(1L).name("Black Coffee").price(4.0f).build();
-    DrinkEntity latte = DrinkEntity.builder().id(2L).name("Latte").price(5.0f).build();
+    DrinkEntity blackCoffee =new DrinkEntity(1L, "Black Coffee", BigDecimal.valueOf(4.0));
+    DrinkEntity latte = new DrinkEntity(2L, "Latte", BigDecimal.valueOf(5.0));
 
     List<DrinkEntity> drinks = new ArrayList<>();
     drinks.add(blackCoffee);
@@ -69,9 +65,8 @@ public class ReportServiceTests {
 
     Mockito.when(drinkRepository.findAll()).thenReturn(drinks);
 
-    ToppingEntity milk = ToppingEntity.builder().id(1L).name("Milk").price(2.0f).build();
-    ToppingEntity hazelnutSyrup = ToppingEntity.builder().id(2L).name("Hazelnut syrup").price(3.0f)
-        .build();
+    ToppingEntity milk = new ToppingEntity(1L, "Milk", BigDecimal.valueOf(2.0));
+    ToppingEntity hazelnutSyrup = new ToppingEntity(2L, "Hazelnut syrup", BigDecimal.valueOf(3.0));
 
     Mockito.when(toppingRepository.findById(1L)).thenReturn(Optional.of(milk));
     Mockito.when(toppingRepository.findById(2L)).thenReturn(Optional.of(hazelnutSyrup));
@@ -79,24 +74,24 @@ public class ReportServiceTests {
     DrinkToppingRelation blackCoffeeMilkRelation = new DrinkToppingRelation();
     blackCoffeeMilkRelation.setDrinkId(1L);
     blackCoffeeMilkRelation.setToppingId(1L);
-    blackCoffeeMilkRelation.setAmount(5L);
+    blackCoffeeMilkRelation.setNumberOfUsageTogether(5L);
     blackCoffeeMilkRelation.setId(1L);
 
     DrinkToppingRelation blackCoffeeHazelnutSyrupRelation = new DrinkToppingRelation();
     blackCoffeeHazelnutSyrupRelation.setDrinkId(1L);
     blackCoffeeHazelnutSyrupRelation.setToppingId(2L);
-    blackCoffeeHazelnutSyrupRelation.setAmount(7L);
+    blackCoffeeHazelnutSyrupRelation.setNumberOfUsageTogether(7L);
     blackCoffeeHazelnutSyrupRelation.setId(2L);
 
     DrinkToppingRelation latteRelation = new DrinkToppingRelation();
     latteRelation.setDrinkId(2L);
     latteRelation.setToppingId(2L);
-    latteRelation.setAmount(3L);
+    latteRelation.setNumberOfUsageTogether(3L);
     latteRelation.setId(3L);
 
-    Mockito.when(drinkToppingRelationRepository.findTopByDrinkIdEqualsOrderByAmountDesc(1L))
+    Mockito.when(drinkToppingRelationRepository.findTopByDrinkIdEqualsOrderByNumberOfUsageTogetherDesc(1L))
         .thenReturn(blackCoffeeHazelnutSyrupRelation);
-    Mockito.when(drinkToppingRelationRepository.findTopByDrinkIdEqualsOrderByAmountDesc(2L))
+    Mockito.when(drinkToppingRelationRepository.findTopByDrinkIdEqualsOrderByNumberOfUsageTogetherDesc(2L))
         .thenReturn(latteRelation);
 
     reportService = new ReportServiceImpl(customerRepository, drinkRepository, toppingRepository,
@@ -106,14 +101,13 @@ public class ReportServiceTests {
   @Test
   public void customerAnalysisReportTest() {
     String username = "josh";
-    Long orders = 5L;
+    BigDecimal orders = BigDecimal.valueOf(25.0);
 
     List<CustomerAnalysis> found = reportService.getCustomerAnalysisReport();
     CustomerAnalysis foundAnalysisOfCustomer = found.stream()
         .filter(customerAndOrderWrapper -> "josh".equals(customerAndOrderWrapper.getUsername()))
         .findFirst().orElse(
-            CustomerAnalysis.builder().username("jennifer").totalAmountOfOrders(15L)
-                .build());
+            CustomerAnalysis.createWithUsernameAndTotalOrders("jennifer", BigDecimal.valueOf(15.0)));
 
     assertThat(found.size()).isEqualTo(3);
     assertThat(foundAnalysisOfCustomer.getUsername()).isEqualTo(username);
@@ -129,8 +123,7 @@ public class ReportServiceTests {
     DrinkAndMostUsedTopping found = drinkAnalysis.stream()
         .filter(drinkAndMostUsedToppingWrapper -> "Black Coffee"
             .equals(drinkAndMostUsedToppingWrapper.getDrink())).findFirst().orElse(
-            DrinkAndMostUsedTopping.builder().drink("Macchiato").mostUsedTopping("Lemoon")
-                .build());
+            DrinkAndMostUsedTopping.createWithDrinkAndMostUsedTopping("Macchiato", "Lemoon"));
 
     assertThat(drinkAnalysis.size()).isEqualTo(2);
     assertThat(found.getDrink()).isEqualTo(drink);

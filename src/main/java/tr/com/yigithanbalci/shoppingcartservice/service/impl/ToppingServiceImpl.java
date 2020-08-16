@@ -1,10 +1,13 @@
 package tr.com.yigithanbalci.shoppingcartservice.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
+import tr.com.yigithanbalci.shoppingcartservice.dto.ToppingInput;
 import tr.com.yigithanbalci.shoppingcartservice.exception.ToppingNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
 import tr.com.yigithanbalci.shoppingcartservice.repository.ToppingRepository;
@@ -19,44 +22,50 @@ public class ToppingServiceImpl implements ToppingService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public ToppingEntity create(ToppingEntity toppingEntity) {
-    log.info("Creating a topping: " + toppingEntity.getName());
-    toppingEntity.setId(0);
-    ToppingEntity createdTopping = repository.save(toppingEntity);
-    log.info("Created a topping: " + toppingEntity.getName());
-    return createdTopping;
+  public Topping create(ToppingInput toppingInput) {
+    log.debug("Creating a topping: " + toppingInput.getName());
+    ToppingEntity createdTopping = repository.save(ToppingEntity
+        .createWithNameAndPrice(toppingInput.getName(), toppingInput.getAmount()));
+    log.debug("Created a topping: " + toppingInput.getName());
+    return Topping.from(createdTopping);
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
-  public ToppingEntity update(ToppingEntity toppingEntity) {
-    log.info("Updating a topping: " + toppingEntity.getName());
-    ToppingEntity retrieved = repository.findById(toppingEntity.getId())
+  public Topping update(Topping topping) {
+    log.debug("Updating a topping: " + topping.getName());
+    ToppingEntity updatedTopping = repository.findById(topping.getId())
         .orElseThrow(() -> new ToppingNotFoundException(
-            "Topping not found with id: " + toppingEntity.getId()));
-    retrieved.setName(toppingEntity.getName());
-    retrieved.setPrice(toppingEntity.getPrice());
-    ToppingEntity updatedTopping = repository.save(toppingEntity);
-    log.info("Updated a topping: " + toppingEntity.getName());
-    return updatedTopping;
+            "Topping not found with id: " + topping.getId()));
+    updatedTopping.setName(topping.getName());
+    updatedTopping.setAmount(topping.getAmount());
+    updatedTopping = repository.save(updatedTopping);
+    log.debug("Updated a topping: " + updatedTopping.getName());
+    return Topping.from(updatedTopping);
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
   public void delete(Long id) {
-    log.info("Deleting a topping: " + id);
+    log.debug("Deleting a topping: " + id);
     repository.deleteById(id);
-    log.info("Deleted a topping: " + id);
+    log.debug("Deleted a topping: " + id);
   }
 
   @Override
-  public List<ToppingEntity> findAll() {
-    log.info("Retrieving all topping");
+  public Topping findById(Long id) {
+    return Topping.from(repository.findById(id)
+        .orElseThrow(() -> new ToppingNotFoundException("Drink not found with id: " + id)));
+  }
+
+  @Override
+  public List<Topping> findAll() {
+    log.debug("Retrieving all topping");
     List<ToppingEntity> all = repository.findAll();
     if (all.isEmpty()) {
       throw new ToppingNotFoundException("Not found any toppings in database.");
     }
-    log.info("Retrieved all topping");
-    return all;
+    log.debug("Retrieved all topping");
+    return all.stream().map(Topping::from).collect(Collectors.toList());
   }
 }

@@ -1,5 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,32 +32,31 @@ public class ReportServiceImpl implements ReportService {
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
   public List<CustomerAnalysis> getCustomerAnalysisReport() {
-    log.info("Producing Customer Analysis...");
+    log.debug("Producing Customer Analysis...");
     List<Customer> customers = customerRepository.findAll();
     List<CustomerAnalysis> customerAnalysis = new ArrayList<>();
     customers.forEach(customer -> customerAnalysis.add(
-        CustomerAnalysis.builder().username(customer.getUsername())
-            .totalAmountOfOrders(customer.getTotalOrders()).build()));
-    log.info("Produced Customer Analysis.");
+        CustomerAnalysis.createWithUsernameAndTotalOrders(customer.getUser().getUsername(), customer.getTotalAmountOfOrders())));
+    log.debug("Produced Customer Analysis.");
     return customerAnalysis;
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Override
   public List<DrinkAndMostUsedTopping> getDrinkAnalysisReport() {
-    log.info("Producing Drink Analysis...");
+    log.debug("Producing Drink Analysis...");
     List<DrinkEntity> drinks = drinkRepository.findAll();
 
     List<DrinkAndMostUsedTopping> drinkAnalysis = new ArrayList<>();
     drinks.forEach(drinkEntity -> {
       DrinkToppingRelation topByDrinkIdEqualsOrderByAmount = drinkToppingRelationRepository
-          .findTopByDrinkIdEqualsOrderByAmountDesc(drinkEntity.getId());
+          .findTopByDrinkIdEqualsOrderByNumberOfUsageTogetherDesc(drinkEntity.getId());
       drinkAnalysis.add(
-          DrinkAndMostUsedTopping.builder().drink(drinkEntity.getName()).mostUsedTopping(
+          DrinkAndMostUsedTopping.createWithDrinkAndMostUsedTopping(drinkEntity.getName(),
               toppingRepository.findById(topByDrinkIdEqualsOrderByAmount.getToppingId()).orElse(
-                  ToppingEntity.builder().name("none").build()).getName()).build());
+                  ToppingEntity.createWithNameAndPrice("none", BigDecimal.ZERO)).getName()));
     });
-    log.info("Produced Drink Analysis.");
+    log.debug("Produced Drink Analysis.");
     return drinkAnalysis;
   }
 }

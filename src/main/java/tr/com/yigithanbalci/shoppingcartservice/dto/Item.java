@@ -1,41 +1,51 @@
 package tr.com.yigithanbalci.shoppingcartservice.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.constraints.PositiveOrZero;
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class Item implements Serializable {
+public class Item extends SelfValidating<Item> implements Serializable {
 
+  @NonNull
   private Drink drink;
+
   private List<Topping> toppings = new ArrayList<>();
-  private Float amount = 0f;
 
-  public Item(final Drink drink) {
-    if(drink != null && drink.getPrice() != null){
-      amount = drink.getPrice();
-    }
+  @PositiveOrZero(message = "Amount id positive")
+  private BigDecimal amount = BigDecimal.ZERO;
+
+  public static Item createWithDrink(@NonNull final Drink drink){
+    return new Item(drink);
+  }
+
+  protected Item(final Drink drink) {
+    this.amount = drink.getAmount();
+    this.drink = drink;
+    this.validateSelf();
+  }
+
+  public void setDrink(@NonNull final Drink drink) {
+    this.amount = this.amount.subtract(this.amount);
+    this.amount = this.amount.add(drink.getAmount());
     this.drink = drink;
   }
 
-  public void setDrink(final Drink drink){
-    if(this.drink != null && this.drink.getPrice() != null){
-      amount = amount - this.drink.getPrice();
-    }
-    if(drink != null && drink.getPrice() != null){
-      amount = amount + drink.getPrice();
-    }
-    this.drink = drink;
-  }
-
-  public void addTopping(Topping topping) {
-    if (topping != null){
-      toppings.add(topping);
-      amount = amount + topping.getPrice();
-    }
+  public void addTopping(@NonNull final Topping topping) {
+    toppings.add(topping);
+    this.amount = this.amount.add(topping.getAmount());
   }
 }

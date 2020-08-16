@@ -10,7 +10,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import tr.com.yigithanbalci.shoppingcartservice.auth.UserDetailsImpl;
+import tr.com.yigithanbalci.shoppingcartservice.security.UserDetailsImpl;
 import tr.com.yigithanbalci.shoppingcartservice.model.User;
 import tr.com.yigithanbalci.shoppingcartservice.repository.UserRepository;
 import tr.com.yigithanbalci.shoppingcartservice.service.impl.UserDetailsServiceImpl;
@@ -35,7 +35,6 @@ public class UserDetailsServiceTests {
     user.setUsername("yigit");
     user.setPassword("yigit");
     user.setRole("USER");
-    user.setOrders(5L);
 
     UserDetailsImpl userDetails = new UserDetailsImpl(user);
 

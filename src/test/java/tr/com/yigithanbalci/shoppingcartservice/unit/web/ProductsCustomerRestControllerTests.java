@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,10 +18,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
+import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
 import tr.com.yigithanbalci.shoppingcartservice.exception.DrinkNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.exception.ToppingNotFoundException;
-import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
-import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
 import tr.com.yigithanbalci.shoppingcartservice.service.DrinkService;
 import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
 import tr.com.yigithanbalci.shoppingcartservice.web.ProductsCustomerRestController;
@@ -45,12 +46,12 @@ public class ProductsCustomerRestControllerTests {
 
   @Test
   public void testFindDrinks() throws Exception {
-    DrinkEntity blackCoffee = DrinkEntity.builder().id(1L).name("Black Coffee").price(4.0f).build();
-    DrinkEntity latte = DrinkEntity.builder().id(2L).name("Latte").price(5.0f).build();
-    DrinkEntity mocha = DrinkEntity.builder().id(3L).name("Mocha").price(6.0f).build();
-    DrinkEntity tea = DrinkEntity.builder().id(4L).name("Tea").price(3.0f).build();
+    Drink blackCoffee = Drink.createWithIdAndNameAndPrice(1L, "Black Coffee", BigDecimal.valueOf(4.0));
+    Drink latte =Drink.createWithIdAndNameAndPrice(2L, "Latte", BigDecimal.valueOf(5.0));
+    Drink mocha = Drink.createWithIdAndNameAndPrice(3L, "Mocha", BigDecimal.valueOf(6.0));
+    Drink tea = Drink.createWithIdAndNameAndPrice(4L, "Tea", BigDecimal.valueOf(3.0));
 
-    List<DrinkEntity> drinks = new ArrayList<>();
+    List<Drink> drinks = new ArrayList<>();
     drinks.add(blackCoffee);
     drinks.add(latte);
     drinks.add(mocha);
@@ -67,15 +68,12 @@ public class ProductsCustomerRestControllerTests {
 
   @Test
   public void testFindToppings() throws Exception {
-    ToppingEntity milk = ToppingEntity.builder().id(1L).name("Milk").price(2.0f).build();
-    ToppingEntity hazelnutSyrup = ToppingEntity.builder().id(2L).name("Hazelnut syrup").price(3.0f)
-        .build();
-    ToppingEntity chocolateSauce = ToppingEntity.builder().id(3L).name("Chocolate sauce")
-        .price(5.0f)
-        .build();
-    ToppingEntity lemon = ToppingEntity.builder().id(4L).name("Lemon").price(2.0f).build();
+    Topping milk = Topping.createWithIdAndNameAndPrice(1L, "Milk", BigDecimal.valueOf(2.0));
+    Topping hazelnutSyrup = Topping.createWithIdAndNameAndPrice(2L, "Hazelnut syrup", BigDecimal.valueOf(3.0));
+    Topping chocolateSauce = Topping.createWithIdAndNameAndPrice(3L, "Chocolate sauce", BigDecimal.valueOf(5.0));
+    Topping lemon = Topping.createWithIdAndNameAndPrice(4L, "Lemon", BigDecimal.valueOf(2.0));
 
-    List<ToppingEntity> toppings = new ArrayList<>();
+    List<Topping> toppings = new ArrayList<>();
     toppings.add(milk);
     toppings.add(hazelnutSyrup);
     toppings.add(chocolateSauce);

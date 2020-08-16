@@ -1,20 +1,43 @@
 package tr.com.yigithanbalci.shoppingcartservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 
-// Builder for sake of usage. Temp refactor to Abstract Factory Methods maybe.
-@Data
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Drink implements Serializable {
+@Getter
+@ToString
+@EqualsAndHashCode(callSuper = false)
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+public class Drink extends SelfValidating<Drink> implements Serializable {
 
-  private Long id;
-  private String name;
-  private Float price;
+  @Positive(message = "Id is positive")
+  private final Long id;
+
+  @NotBlank(message = "Name is not blank")
+  private final String name;
+
+  @Positive(message = "Amount is positive or zero")
+  private final BigDecimal amount;
+
+  public static Drink from(DrinkEntity drinkEntity) {
+    return new Drink(drinkEntity.getId(), drinkEntity.getName(), drinkEntity.getAmount());
+  }
+
+  @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+  public static Drink createWithIdAndNameAndPrice(@JsonProperty("id") Long id,
+      @JsonProperty("name") String name,
+      @JsonProperty("price") BigDecimal price) {
+    Drink drink = new Drink(id, name, price);
+    drink.validateSelf();
+    return drink;
+  }
 }

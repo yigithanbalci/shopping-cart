@@ -3,6 +3,7 @@ package tr.com.yigithanbalci.shoppingcartservice.unit.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
+import tr.com.yigithanbalci.shoppingcartservice.dto.ToppingInput;
 import tr.com.yigithanbalci.shoppingcartservice.exception.ToppingNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
 import tr.com.yigithanbalci.shoppingcartservice.repository.ToppingRepository;
@@ -32,19 +35,19 @@ public class ToppingServiceTests {
   }
 
   @Test
-  public void whenNotFound_thenExceptionShouldBeThrown(){
+  public void whenNotFound_thenExceptionShouldBeThrown() {
     Mockito.when(toppingRepository.findAll()).thenReturn(new ArrayList<>());
-    assertThatExceptionOfType(ToppingNotFoundException.class).isThrownBy(() -> toppingService.findAll());
+    assertThatExceptionOfType(ToppingNotFoundException.class)
+        .isThrownBy(() -> toppingService.findAll());
   }
 
   @Test
   public void whenValidName_thenToppingShouldBeFound() {
-    ToppingEntity milk = ToppingEntity.builder().id(1L).name("Milk").price(2.0f).build();
-    ToppingEntity hazelnutSyrup = ToppingEntity.builder().id(2L).name("Hazelnut syrup").price(3.0f)
-        .build();
-    ToppingEntity chocolateSauce = ToppingEntity.builder().id(3L).name("Chocolate sauce").price(5.0f)
-        .build();
-    ToppingEntity lemon = ToppingEntity.builder().id(4L).name("Lemon").price(2.0f).build();
+    ToppingEntity milk = new ToppingEntity(1L, "Milk", BigDecimal.valueOf(2.0));
+    ToppingEntity hazelnutSyrup = new ToppingEntity(2L, "Hazelnut syrup", BigDecimal.valueOf(3.0));
+    ToppingEntity chocolateSauce = new ToppingEntity(3L, "Chocolate sauce",
+        BigDecimal.valueOf(5.0));
+    ToppingEntity lemon = new ToppingEntity(4L, "Lemon", BigDecimal.valueOf(2.0));
 
     List<ToppingEntity> toppings = new ArrayList<>();
     toppings.add(milk);
@@ -55,9 +58,9 @@ public class ToppingServiceTests {
     Mockito.when(toppingRepository.findAll()).thenReturn(toppings);
 
     String name = "Milk";
-    ToppingEntity mapleSyrup = ToppingEntity.builder().id(5L).name("Maple syrup").price(3.0f)
-        .build();
-    ToppingEntity found = toppingService.findAll().stream()
+    Topping mapleSyrup = Topping
+        .createWithIdAndNameAndPrice(5L, "Maple syrup", BigDecimal.valueOf(3.0));
+    Topping found = toppingService.findAll().stream()
         .filter(toppingEntity -> toppingEntity.getId() == 1L).findFirst().orElse(mapleSyrup);
 
     assertThat(found.getName()).isEqualTo(name);
@@ -66,24 +69,27 @@ public class ToppingServiceTests {
   // These functions below directly comes from jpa repo.
   @Test
   public void crudTest() {
-    ToppingEntity mapleSyrup = ToppingEntity.builder().id(5L).name("Maple syrup").price(3.0f)
-        .build();
-    ToppingEntity updatedMapleSyrup = ToppingEntity.builder().id(5L).name("Maple syrup").price(4.0f)
-        .build();
+    ToppingEntity mapleSyrup = new ToppingEntity(5L, "Maple syrup", BigDecimal.valueOf(3.0));
+    ToppingEntity mapleSyrupBeforeCreation = new ToppingEntity(null, "Maple syrup", BigDecimal.valueOf(3.0));
+    ToppingEntity updatedMapleSyrup = new ToppingEntity(5L, "Maple syrup", BigDecimal.valueOf(4.0));
+
     Mockito.when(toppingRepository.findById(5L)).thenReturn(Optional.of(mapleSyrup));
     Mockito.when(toppingRepository.save(mapleSyrup)).thenReturn(mapleSyrup);
 
-    ToppingEntity savedTopping = toppingService.create(mapleSyrup);
-    Mockito.verify(toppingRepository, Mockito.times(1)).save(mapleSyrup);
+    ToppingInput mapleSyrupInput = new ToppingInput(mapleSyrup.getName(), mapleSyrup.getAmount());
+    Mockito.when(toppingRepository
+        .save(ToppingEntity.createWithNameAndPrice(mapleSyrup.getName(), mapleSyrup.getAmount())))
+        .thenReturn(mapleSyrup);
+
+    Topping savedTopping = toppingService.create(mapleSyrupInput);
+    Mockito.verify(toppingRepository, Mockito.times(1)).save(mapleSyrupBeforeCreation);
     assertThat(savedTopping.getName()).isEqualTo(mapleSyrup.getName());
 
-    mapleSyrup.setId(5L);
-    mapleSyrup.setPrice(4.0f);
     Mockito.when(toppingRepository.save(updatedMapleSyrup)).thenReturn(updatedMapleSyrup);
 
-    ToppingEntity updatedTopping = toppingService.update(mapleSyrup);
-    Mockito.verify(toppingRepository, Mockito.times(2)).save(mapleSyrup);
-    assertThat(updatedTopping.getPrice()).isEqualTo(updatedMapleSyrup.getPrice());
+    Topping updatedTopping = toppingService.update(Topping.from(updatedMapleSyrup));
+    Mockito.verify(toppingRepository, Mockito.times(1)).save(mapleSyrup);
+    assertThat(updatedTopping.getAmount()).isEqualTo(updatedMapleSyrup.getAmount());
 
     mapleSyrup.setId(5L);
     toppingService.delete(mapleSyrup.getId());

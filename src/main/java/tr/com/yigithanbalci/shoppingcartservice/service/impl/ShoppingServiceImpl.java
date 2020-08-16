@@ -1,5 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,12 +10,14 @@ import org.springframework.stereotype.Service;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Item;
+import tr.com.yigithanbalci.shoppingcartservice.dto.ItemInput;
 import tr.com.yigithanbalci.shoppingcartservice.exception.CustomerNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.Customer;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkToppingRelation;
 import tr.com.yigithanbalci.shoppingcartservice.repository.CartRepository;
 import tr.com.yigithanbalci.shoppingcartservice.repository.CustomerRepository;
 import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkToppingRelationRepository;
+import tr.com.yigithanbalci.shoppingcartservice.service.ItemService;
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 
 @Slf4j
@@ -22,43 +25,45 @@ import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 @RequiredArgsConstructor
 public class ShoppingServiceImpl implements ShoppingService {
 
+  private final ItemService itemService;
   private final CartRepository cartRepository;
   private final CustomerRepository customerRepository;
   private final DrinkToppingRelationRepository drinkToppingRelationRepository;
 
   @Override
-  public Cart addItemToCart(Item item, Long userId) {
-    log.info("Started to add item to cart of user with id: " + userId);
+  public Cart addItemToCart(ItemInput item, Long userId) {
+    log.debug("Started to add item to cart of user with id: " + userId);
     Cart cart = cartRepository.findByUserId(userId);
-    cart.addItem(item);
+    cart.addItem(itemService.getItemFromItemInput(item));
     cartRepository.updateByUserId(cart, userId);
-    log.info("Finished to add item to cart of user with id: " + userId);
+    log.debug("Finished to add item to cart of user with id: " + userId);
     return cart;
   }
 
   @Override
-  public Cart deleteItemFromCart(Item item, Long userId) {
-    log.info("Started to delete item to cart of user with id: " + userId);
+  public Cart deleteItemFromCart(ItemInput item, Long userId) {
+    log.debug("Started to delete item to cart of user with id: " + userId);
     Cart cart = cartRepository.findByUserId(userId);
-    cart.deleteItem(item);
+    cart.deleteItem(itemService.getItemFromItemInput(item));
     cartRepository.updateByUserId(cart, userId);
-    log.info("Finished to delete item to cart of user with id: " + userId);
+    log.debug("Finished to delete item to cart of user with id: " + userId);
     return cart;
   }
 
   @Override
   public FinalizedCart checkoutCart(Long userId) {
-    log.info("Started to checkout cart of user with id: " + userId);
+    log.debug("Started to checkout cart of user with id: " + userId);
     Cart cart = cartRepository.findByUserId(userId);
-    FinalizedCart finalizedCart = FinalizedCart.builder().originalAmount(cart.getAmount())
-        .discountedAmount(calculateDiscountedAmount(cart)).build();
+    FinalizedCart finalizedCart = FinalizedCart
+        .createWithOriginalAmountAndDiscountedAmount(cart.getAmount(),
+            calculateDiscountedAmount(cart));
     cartRepository.deleteByUserId(userId);
     updateDrinkToppingRelation(cart);
     Customer customer = customerRepository.findById(userId)
         .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + userId));
-    customer.setTotalOrders(customer.getTotalOrders() + 1);
+    customer.setTotalAmountOfOrders(customer.getTotalAmountOfOrders().add(BigDecimal.ONE));
     customerRepository.save(customer);
-    log.info("Finished to checkout cart of user with id: " + userId);
+    log.debug("Finished to checkout cart of user with id: " + userId);
     return finalizedCart;
   }
 
@@ -66,26 +71,28 @@ public class ShoppingServiceImpl implements ShoppingService {
     cart.getItems().forEach(item -> item.getToppings().forEach(topping -> {
       DrinkToppingRelation relation = drinkToppingRelationRepository
           .findByDrinkIdEqualsAndToppingIdEquals(item.getDrink().getId(), topping.getId());
-      if(relation == null){
+      if (relation == null) {
         relation = new DrinkToppingRelation();
         relation.setDrinkId(item.getDrink().getId());
         relation.setToppingId(topping.getId());
-        relation.setAmount(0L);
+        relation.setNumberOfUsageTogether(0L);
       }
-      relation.setAmount(relation.getAmount() + 1);
+      relation.usedOneMoreTime();
       drinkToppingRelationRepository.save(relation);
     }));
   }
 
-  private float calculateDiscountedAmount(Cart cart) {
-    float discountedAmount =
-        cart.getAmount() > 12.0f ? (cart.getAmount() * 0.75f) : cart.getAmount();
+  private BigDecimal calculateDiscountedAmount(Cart cart) {
+    BigDecimal discountedAmount =
+        cart.getAmount().compareTo(BigDecimal.valueOf(12.0)) > 0 ? (cart.getAmount()
+            .multiply(BigDecimal.valueOf(0.75))) : cart.getAmount();
     if (cart.getItems().size() >= 3) {
-      List<Float> amounts = cart.getItems().stream().map(Item::getAmount)
+      List<BigDecimal> amounts = cart.getItems().stream().map(Item::getAmount)
           .collect(Collectors.toList());
-      float minAmount = Collections.min(amounts);
-      if (cart.getAmount() - minAmount < discountedAmount) {
-        discountedAmount = cart.getAmount() - minAmount;
+      BigDecimal minAmount = Collections.min(amounts);
+      BigDecimal substracted = cart.getAmount().subtract(minAmount);
+      if (discountedAmount.compareTo(substracted) > 0) {
+        discountedAmount = cart.getAmount().subtract(minAmount);
       }
     }
     return discountedAmount;

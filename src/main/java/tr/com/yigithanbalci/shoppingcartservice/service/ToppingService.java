@@ -1,12 +1,14 @@
 package tr.com.yigithanbalci.shoppingcartservice.service;
 
 import java.util.List;
-import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
+import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
+import tr.com.yigithanbalci.shoppingcartservice.dto.ToppingInput;
 
 public interface ToppingService {
 
-  ToppingEntity create(ToppingEntity toppingEntity);
-  ToppingEntity update(ToppingEntity toppingEntity);
+  Topping create(ToppingInput toppingInput);
+  Topping update(Topping topping);
   void delete(Long id);
-  List<ToppingEntity> findAll();
+  Topping findById(Long id);
+  List<Topping> findAll();
 }

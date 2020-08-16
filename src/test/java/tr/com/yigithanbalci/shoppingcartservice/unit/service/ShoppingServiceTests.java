@@ -2,7 +2,9 @@ package tr.com.yigithanbalci.shoppingcartservice.unit.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +15,7 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Item;
+import tr.com.yigithanbalci.shoppingcartservice.dto.ItemInput;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
 import tr.com.yigithanbalci.shoppingcartservice.model.Customer;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkToppingRelation;
@@ -20,6 +23,7 @@ import tr.com.yigithanbalci.shoppingcartservice.model.User;
 import tr.com.yigithanbalci.shoppingcartservice.repository.CartRepository;
 import tr.com.yigithanbalci.shoppingcartservice.repository.CustomerRepository;
 import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkToppingRelationRepository;
+import tr.com.yigithanbalci.shoppingcartservice.service.ItemService;
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 import tr.com.yigithanbalci.shoppingcartservice.service.impl.ShoppingServiceImpl;
 
@@ -27,6 +31,9 @@ import tr.com.yigithanbalci.shoppingcartservice.service.impl.ShoppingServiceImpl
 public class ShoppingServiceTests {
 
   private ShoppingService shoppingService;
+
+  @MockBean
+  private ItemService itemService;
 
   @MockBean
   private CartRepository cartRepository;
@@ -44,23 +51,24 @@ public class ShoppingServiceTests {
     Cart discountlessCart = new Cart();
     Cart twentyPerCentCart = new Cart();
 
-    Drink java = Drink.builder().name("Java").price(7.0f).build();
-    Drink latte = Drink.builder().name("Latte").price(5.0f).build();
-    Drink mocha = Drink.builder().name("Mocha").price(8.0f).build();
-    Drink blackCoffee = Drink.builder().name("Black Coffee").price(8.0f).build();
+    Drink java = Drink.createWithIdAndNameAndPrice(5L, "Java", BigDecimal.valueOf(7.0));
+    Drink latte = Drink.createWithIdAndNameAndPrice(6L, "Latte", BigDecimal.valueOf(5.0));
+    Drink mocha = Drink.createWithIdAndNameAndPrice(7L, "Mocha", BigDecimal.valueOf(8.0));
+    Drink blackCoffee = Drink
+        .createWithIdAndNameAndPrice(8L, "Black Coffee", BigDecimal.valueOf(8.0));
 
-    Topping milk = Topping.builder().name("Milk").price(4.0f).build();
-    Topping hazelnutSyrup = Topping.builder().name("Hazelnut syrup").price(3.0f)
-        .build();
+    Topping milk = Topping.createWithIdAndNameAndPrice(5L, "Milk", BigDecimal.valueOf(4.0));
+    Topping hazelnutSyrup = Topping
+        .createWithIdAndNameAndPrice(6L, "Hazelnut syrup", BigDecimal.valueOf(3.0));
 
-    Item latteItem = new Item(latte);
+    Item latteItem = Item.createWithDrink(latte);
     latteItem.addTopping(hazelnutSyrup);
 
-    Item mochaItem = new Item(mocha);
+    Item mochaItem = Item.createWithDrink(mocha);
     mochaItem.addTopping(milk);
 
-    Item blackCoffeeItem = new Item(blackCoffee);
-    Item javaItem = new Item(java);
+    Item blackCoffeeItem = Item.createWithDrink(blackCoffee);
+    Item javaItem = Item.createWithDrink(java);
 
     threeItemCart.addItem(latteItem);
     threeItemCart.addItem(mochaItem);
@@ -74,41 +82,36 @@ public class ShoppingServiceTests {
     twentyPerCentCart.addItem(blackCoffeeItem);
     twentyPerCentCart.addItem(javaItem);
 
-    User user1 = User.builder().id(1L).username("user1").password("user1").role("USER").enabled(true)
-        .build();
-    User user2 = User.builder().id(2L).username("user2").password("user2").role("USER").enabled(true)
-        .build();
-    User user3 = User.builder().id(3L).username("user3").password("user3").role("USER").enabled(true)
-        .build();
-    User user4 = User.builder().id(4L).username("user4").password("user4").role("USER").enabled(true)
-        .build();
+    User user1 = User.builder().id(1L).username("user1").password("user1").role("USER")
+        .enabled(true).build();
+    User user2 = User.builder().id(2L).username("user2").password("user2").role("USER")
+        .enabled(true).build();
+    User user3 = User.builder().id(3L).username("user3").password("user3").role("USER")
+        .enabled(true).build();
+    User user4 = User.builder().id(4L).username("user4").password("user4").role("USER")
+        .enabled(true).build();
 
     Customer customer1 = new Customer();
-    customer1.setId(1L);
-    customer1.setTotalOrders(0L);
+    customer1.setTotalAmountOfOrders(BigDecimal.valueOf(0.0));
     Customer customer2 = new Customer();
-    customer2.setId(2L);
-    customer2.setTotalOrders(0L);
+    customer2.setTotalAmountOfOrders(BigDecimal.valueOf(0.0));
     Customer customer3 = new Customer();
-    customer3.setId(3L);
-    customer3.setTotalOrders(0L);
+    customer3.setTotalAmountOfOrders(BigDecimal.valueOf(0.0));
     Customer customer4 = new Customer();
-    customer4.setId(4L);
-    customer4.setTotalOrders(0L);
+    customer4.setTotalAmountOfOrders(BigDecimal.valueOf(0.0));
 
-    user1.setCustomerId(customer1.getId());
-    customer1.setUserId(user1.getId());
-    user2.setCustomerId(customer2.getId());
-    customer2.setUserId(user2.getId());
-    user3.setCustomerId(customer3.getId());
-    customer3.setUserId(user3.getId());
-    user4.setCustomerId(customer4.getId());
-    customer4.setUserId(user4.getId());
+    user1.setCustomer(customer1);
+    customer1.setUser(user1);
+    user2.setCustomer(customer2);
+    customer2.setUser(user2);
+    user3.setCustomer(customer3);
+    customer3.setUser(user3);
+    user4.setCustomer(customer4);
+    customer4.setUser(user4);
 
     Mockito.when(drinkToppingRelationRepository
         .findByDrinkIdEqualsAndToppingIdEquals(latte.getId(), hazelnutSyrup.getId()))
-        .thenReturn(DrinkToppingRelation.builder().id(1L).drinkId(latte.getId()).toppingId(
-            hazelnutSyrup.getId()).amount(1L).build());
+        .thenReturn(new DrinkToppingRelation(1L, latte.getId(), hazelnutSyrup.getId(), 1L));
 
     Mockito.when(drinkToppingRelationRepository
         .findByDrinkIdEqualsAndToppingIdEquals(mocha.getId(), milk.getId()))
@@ -123,21 +126,29 @@ public class ShoppingServiceTests {
     Mockito.when(customerRepository.findById(2L)).thenReturn(Optional.of(customer2));
     Mockito.when(customerRepository.findById(3L)).thenReturn(Optional.of(customer3));
     Mockito.when(customerRepository.findById(4L)).thenReturn(Optional.of(customer4));
-    shoppingService = new ShoppingServiceImpl(cartRepository, customerRepository, drinkToppingRelationRepository);
+    shoppingService = new ShoppingServiceImpl(itemService, cartRepository, customerRepository,
+        drinkToppingRelationRepository);
   }
 
   @Test
   public void addItemTest() {
-    Drink tea = Drink.builder().name("Tea").price(3.0f).build();
-    Drink smootie = Drink.builder().name("Smootie").price(3.0f).build();
+    Drink tea = Drink.createWithIdAndNameAndPrice(9L, "Tea", BigDecimal.valueOf(3.0));
+    Drink smootie = Drink.createWithIdAndNameAndPrice(10L, "Smootie", BigDecimal.valueOf(3.0));
 
-    Item teaItem = new Item(tea);
-    Item smootieItem = new Item(smootie);
+    Item teaItem = Item.createWithDrink(tea);
+    Item smootieItem = Item.createWithDrink(smootie);
 
-    Topping milk = Topping.builder().name("Milk").price(2.0f).build();
+    Topping milk = Topping.createWithIdAndNameAndPrice(5L, "Milk", BigDecimal.valueOf(4.0));
     teaItem.addTopping(milk);
 
-    Cart found = shoppingService.addItemToCart(teaItem, 1L);
+    ItemInput teaItemInput = new ItemInput(teaItem.getDrink().getId(),
+        teaItem.getToppings().stream().map(Topping::getId).collect(
+            Collectors.toList()));
+
+    Mockito.when(itemService.getItemFromItemInput(teaItemInput))
+        .thenReturn(teaItem);
+
+    Cart found = shoppingService.addItemToCart(teaItemInput, 1L);
     Item foundItem = found.getItems().stream().filter(item -> item.getDrink().equals(tea))
         .findFirst()
         .orElse(smootieItem);
@@ -149,13 +160,21 @@ public class ShoppingServiceTests {
 
   @Test
   public void deleteItemTest() {
-    Drink blackCoffee = Drink.builder().name("Black Coffee").price(8.0f).build();
-    Drink smootie = Drink.builder().name("Smootie").price(3.0f).build();
+    Drink blackCoffee = Drink
+        .createWithIdAndNameAndPrice(8L, "Black Coffee", BigDecimal.valueOf(8.0));
+    Drink smootie = Drink.createWithIdAndNameAndPrice(10L, "Smootie", BigDecimal.valueOf(3.0));
 
-    Item smootieItem = new Item(smootie);
-    Item blackCoffeeItem = new Item(blackCoffee);
+    Item smootieItem = Item.createWithDrink(smootie);
+    Item blackCoffeeItem = Item.createWithDrink(blackCoffee);
 
-    Cart found = shoppingService.deleteItemFromCart(blackCoffeeItem, 2L);
+    ItemInput blackCoffeeItemInput = new ItemInput(blackCoffeeItem.getDrink().getId(),
+        blackCoffeeItem.getToppings().stream().map(Topping::getId).collect(
+            Collectors.toList()));
+
+    Mockito.when(itemService.getItemFromItemInput(blackCoffeeItemInput))
+        .thenReturn(blackCoffeeItem);
+
+    Cart found = shoppingService.deleteItemFromCart(blackCoffeeItemInput, 2L);
     Item foundItem = found.getItems().stream().filter(item -> item.getDrink().equals(blackCoffee))
         .findFirst()
         .orElse(smootieItem);
@@ -165,26 +184,26 @@ public class ShoppingServiceTests {
   }
 
   @Test
-  public void whenCustomerNotFound_thenNotFound() {
+  public void whenLessThanThreeItemAnd12Eu_thenDiscountless() {
     FinalizedCart discountlessFinalizedCart = shoppingService.checkoutCart(3L);
 
-    float blackCoffee = 8.0f;
+    BigDecimal blackCoffee = BigDecimal.valueOf(8.0);
 
     assertThat(discountlessFinalizedCart.getOriginalAmount()).isEqualTo(blackCoffee);
-    assertThat(discountlessFinalizedCart.getOriginalAmount()).isEqualTo(blackCoffee);
+    assertThat(discountlessFinalizedCart.getDiscountedAmount()).isEqualTo(blackCoffee);
   }
 
   @Test
   public void whenMoreThanTwelveEuros_then25PerCentDiscount() {
     FinalizedCart twentyPerCentFinalizedCart = shoppingService.checkoutCart(4L);
 
-    float blackCoffee = 8.0f;
-    float javaItem = 7.0f;
+    BigDecimal blackCoffee = BigDecimal.valueOf(8.0);
+    BigDecimal javaItem = BigDecimal.valueOf(7.0);
 
-    float twentyPerCentCart = blackCoffee + javaItem;
+    BigDecimal twentyPerCentCart = blackCoffee.add(javaItem);
     assertThat(twentyPerCentFinalizedCart.getOriginalAmount()).isEqualTo(twentyPerCentCart);
 
-    float discountedtwentyPerCentCart = twentyPerCentCart * 0.75f;
+    BigDecimal discountedtwentyPerCentCart = twentyPerCentCart.multiply(BigDecimal.valueOf(0.75));
     assertThat(twentyPerCentFinalizedCart.getDiscountedAmount())
         .isEqualTo(discountedtwentyPerCentCart);
   }
@@ -194,18 +213,19 @@ public class ShoppingServiceTests {
     FinalizedCart threeItemFinalizedCart = shoppingService.checkoutCart(1L);
     FinalizedCart twoItemFinalizedCart = shoppingService.checkoutCart(2L);
 
-    float latteItem = 8.0f;
-    float mochaItem = 12.0f;
-    float blackCoffee = 8.0f;
+    BigDecimal latteItem = BigDecimal.valueOf(8.0);
+    BigDecimal mochaItem = BigDecimal.valueOf(12.0);
+    BigDecimal blackCoffee = BigDecimal.valueOf(8.0);
 
-    float threeItemCart = latteItem + mochaItem + blackCoffee;
-    float twoItemCart = mochaItem + blackCoffee;
+    BigDecimal threeItemCart = latteItem.add(mochaItem).add(blackCoffee);
+    BigDecimal twoItemCart = mochaItem.add(blackCoffee);
 
     assertThat(threeItemFinalizedCart.getOriginalAmount()).isEqualTo(threeItemCart);
     assertThat(twoItemFinalizedCart.getOriginalAmount()).isEqualTo(twoItemCart);
 
-    float discountedThreeItemCart = Math.min((threeItemCart * 0.75f), (threeItemCart - 8.0f));
-    float discountedTwoItemCart = twoItemCart * 0.75f;
+    BigDecimal discountedThreeItemCart = threeItemCart.multiply(BigDecimal.valueOf(0.75))
+        .min(threeItemCart.subtract(BigDecimal.valueOf(8.0)));
+    BigDecimal discountedTwoItemCart = twoItemCart.multiply(BigDecimal.valueOf(0.75));
 
     assertThat(threeItemFinalizedCart.getDiscountedAmount()).isEqualTo(discountedThreeItemCart);
     assertThat(twoItemFinalizedCart.getDiscountedAmount()).isEqualTo(discountedTwoItemCart);

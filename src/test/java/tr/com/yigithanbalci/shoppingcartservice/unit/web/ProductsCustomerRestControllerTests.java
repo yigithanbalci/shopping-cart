@@ -1,5 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.unit.web;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
@@ -9,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,8 +22,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
-import tr.com.yigithanbalci.shoppingcartservice.exception.DrinkNotFoundException;
-import tr.com.yigithanbalci.shoppingcartservice.exception.ToppingNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.service.DrinkService;
 import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
 import tr.com.yigithanbalci.shoppingcartservice.web.ProductsCustomerRestController;
@@ -89,30 +89,16 @@ public class ProductsCustomerRestControllerTests {
   }
 
   @Test
-  public void whenException_thenInternalServerError() throws Exception {
-    given(drinkService.findAll()).willThrow(new RuntimeException("test"));
-    given(toppingService.findAll()).willThrow(new RuntimeException("test"));
+  public void whenNotFound_thenNotFound() {
+    given(drinkService.findAll()).willThrow(new EntityNotFoundException("test"));
+    given(toppingService.findAll()).willThrow(new EntityNotFoundException("test"));
 
-    mockMvc.perform(
-        MockMvcRequestBuilders.get("/products/drinks").contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isInternalServerError());
+    assertThatThrownBy(() -> mockMvc.perform(
+        MockMvcRequestBuilders.get("/products/drinks").contentType(MediaType.APPLICATION_JSON)))
+        .hasCause(new EntityNotFoundException("test"));
 
-    mockMvc.perform(
-        MockMvcRequestBuilders.get("/products/toppings").contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isInternalServerError());
-  }
-
-  @Test
-  public void whenNotFound_thenNotFound() throws Exception {
-    given(drinkService.findAll()).willThrow(new DrinkNotFoundException("test"));
-    given(toppingService.findAll()).willThrow(new ToppingNotFoundException("test"));
-
-    mockMvc.perform(
-        MockMvcRequestBuilders.get("/products/drinks").contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNotFound());
-
-    mockMvc.perform(
-        MockMvcRequestBuilders.get("/products/toppings").contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNotFound());
+    assertThatThrownBy(() -> mockMvc.perform(
+        MockMvcRequestBuilders.get("/products/toppings").contentType(MediaType.APPLICATION_JSON)))
+        .hasCause(new EntityNotFoundException("test"));
   }
 }

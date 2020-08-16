@@ -1,5 +1,6 @@
 package tr.com.yigithanbalci.shoppingcartservice.unit.web;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.math.BigDecimal;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +30,6 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Item;
 import tr.com.yigithanbalci.shoppingcartservice.dto.ItemInput;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
-import tr.com.yigithanbalci.shoppingcartservice.exception.CustomerNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.security.UserDetailsImpl;
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 import tr.com.yigithanbalci.shoppingcartservice.web.ShoppingCartRestController;
@@ -181,48 +182,6 @@ public class ShoppingCartRestControllerTests {
   }
 
   @Test
-  public void whenException_thenInternalServerError() throws Exception {
-    UsernamePasswordAuthenticationToken mockPrincipal = Mockito
-        .mock(UsernamePasswordAuthenticationToken.class);
-    UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
-    Mockito.when(userDetails.getCustomerId()).thenReturn(1L);
-    Mockito.when(mockPrincipal.getPrincipal()).thenReturn(userDetails);
-
-    Item latte = Item
-        .createWithDrink(Drink.createWithIdAndNameAndPrice(1L, "Latte", BigDecimal.valueOf(5.0)));
-
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-    ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-
-    ItemInput latteInput = new ItemInput(latte.getDrink().getId(),
-        latte.getToppings().stream().map(Topping::getId).collect(
-            Collectors.toList()));
-
-    given(shoppingService.addItemToCart(latteInput, 1L)).willThrow(new RuntimeException("test"));
-    given(shoppingService.deleteItemFromCart(latteInput, 1L))
-        .willThrow(new RuntimeException("test"));
-    given(shoppingService.checkoutCart(1L)).willThrow(new RuntimeException("test"));
-
-    String requestJson = ow.writeValueAsString(latteInput);
-
-    mockMvc.perform(
-        MockMvcRequestBuilders.post("/users/1/cart")
-            .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal).content(requestJson))
-        .andExpect(status().isInternalServerError());
-
-    mockMvc.perform(
-        MockMvcRequestBuilders.put("/users/1/cart")
-            .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal).content(requestJson))
-        .andExpect(status().isInternalServerError());
-
-    mockMvc.perform(
-        MockMvcRequestBuilders.put("/users/1/cart/checkout")
-            .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal))
-        .andExpect(status().isInternalServerError());
-  }
-
-  @Test
   public void whenUnAuthorized_thenUnAuthorized() throws Exception {
     UsernamePasswordAuthenticationToken mockPrincipal = Mockito
         .mock(UsernamePasswordAuthenticationToken.class);
@@ -260,18 +219,18 @@ public class ShoppingCartRestControllerTests {
   }
 
   @Test
-  public void whenCustomerNotFound_thenNotFound() throws Exception {
+  public void whenCustomerNotFound_thenNotFound() {
     UsernamePasswordAuthenticationToken mockPrincipal = Mockito
         .mock(UsernamePasswordAuthenticationToken.class);
     UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
     Mockito.when(userDetails.getCustomerId()).thenReturn(1L);
     Mockito.when(mockPrincipal.getPrincipal()).thenReturn(userDetails);
 
-    given(shoppingService.checkoutCart(1L)).willThrow(new CustomerNotFoundException("test"));
+    given(shoppingService.checkoutCart(1L)).willThrow(new EntityNotFoundException("test"));
 
-    mockMvc.perform(
+    assertThatThrownBy(() -> mockMvc.perform(
         MockMvcRequestBuilders.put("/users/1/cart/checkout")
-            .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal))
-        .andExpect(status().isNotFound());
+            .contentType(MediaType.APPLICATION_JSON).principal(mockPrincipal)))
+        .hasCause(new EntityNotFoundException("test"));
   }
 }

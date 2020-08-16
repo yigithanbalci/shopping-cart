@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
-import tr.com.yigithanbalci.shoppingcartservice.exception.DrinkNotFoundException;
-import tr.com.yigithanbalci.shoppingcartservice.exception.InternalServerException;
-import tr.com.yigithanbalci.shoppingcartservice.exception.ToppingNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.service.DrinkService;
 import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
 
@@ -42,16 +39,8 @@ public class ProductsCustomerRestController {
   })
   @GetMapping("/toppings")
   public ResponseEntity<List<Topping>> getAllToppings(){
-    try {
       List<Topping> toppings = toppingService.findAll();
       return ResponseEntity.ok(toppings);
-    } catch (ToppingNotFoundException e){
-      log.error("Not found any toppings in database.");
-      throw e;
-    } catch (Exception e) {
-      log.error("Exception occurs while getting toppings {}", e.getLocalizedMessage(), e);
-      throw new InternalServerException("Toppings could not be retrieved: " + e.getLocalizedMessage());
-    }
   }
 
   @Operation(summary = "Get list of all drinks.")
@@ -66,15 +55,7 @@ public class ProductsCustomerRestController {
   })
   @GetMapping("/drinks")
   public ResponseEntity<List<Drink>> getAllDrinks(){
-    try {
       List<Drink> drinks = drinkService.findAll();
       return ResponseEntity.ok(drinks);
-    } catch (DrinkNotFoundException e){
-      log.error("Not found any drinks in database.");
-      throw e;
-    } catch (Exception e) {
-      log.error("Exception occurs while getting drinks {}", e.getLocalizedMessage(), e);
-      throw new InternalServerException("Drinks could not be retrieved: " + e.getLocalizedMessage());
-    }
   }
 }

@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.dto.DrinkInput;
-import tr.com.yigithanbalci.shoppingcartservice.exception.DrinkNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkRepository;
 import tr.com.yigithanbalci.shoppingcartservice.service.DrinkService;
@@ -36,8 +36,8 @@ public class DrinkServiceTests {
 
   @Test
   public void whenNotFound_thenExceptionShouldBeThrown(){
-    Mockito.when(drinkRepository.findAll()).thenReturn(new ArrayList<>());
-    assertThatExceptionOfType(DrinkNotFoundException.class).isThrownBy(() -> drinkService.findAll());
+    Mockito.when(drinkRepository.findById(1L)).thenReturn(Optional.empty());
+    assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> drinkService.findById(1L));
   }
 
   @Test

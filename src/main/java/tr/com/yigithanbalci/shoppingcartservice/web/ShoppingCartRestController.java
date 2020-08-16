@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.security.Principal;
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +22,6 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.ItemInput;
 import tr.com.yigithanbalci.shoppingcartservice.exception.AuthorizationException;
-import tr.com.yigithanbalci.shoppingcartservice.exception.CustomerNotFoundException;
-import tr.com.yigithanbalci.shoppingcartservice.exception.InternalServerException;
 import tr.com.yigithanbalci.shoppingcartservice.security.UserDetailsImpl;
 import tr.com.yigithanbalci.shoppingcartservice.service.ShoppingService;
 
@@ -44,19 +44,12 @@ public class ShoppingCartRestController {
           content = @Content)
   })
   @PostMapping("/{userId}/cart")
-  public ResponseEntity<Cart> addItemToCart(final Principal principal, @RequestBody final ItemInput item,
-      @PathVariable final Long userId) {
-    try {
+  public ResponseEntity<Cart> addItemToCart(final Principal principal,
+      @RequestBody @Valid final ItemInput item,
+      @PathVariable @Positive(message = "User id is positive or zero") final Long userId) {
       checkAuthentication(principal, userId);
       Cart cart = shoppingService.addItemToCart(item, userId);
       return ResponseEntity.ok(cart);
-    } catch (AuthorizationException e){
-      log.error("Authorization error: {} ", e.getLocalizedMessage(), e);
-      throw e;
-    } catch (Exception e) {
-      log.error("Exception occurs while reporting toppings by drink {}", e.getLocalizedMessage(), e);
-      throw new InternalServerException("Toppings by drink could not be reported: " + e.getLocalizedMessage());
-    }
   }
 
   @Operation(summary = "Delete item from Cart.")
@@ -70,26 +63,19 @@ public class ShoppingCartRestController {
           content = @Content)
   })
   @PutMapping("/{userId}/cart")
-  public ResponseEntity<Cart> deleteItemFromCart(final Principal principal, @RequestBody final ItemInput item,
-      @PathVariable final Long userId) {
-    try {
+  public ResponseEntity<Cart> deleteItemFromCart(final Principal principal,
+      @RequestBody @Valid final ItemInput item,
+      @PathVariable @Positive(message = "User id is positive or zero") final Long userId) {
       checkAuthentication(principal, userId);
       Cart cart = shoppingService.deleteItemFromCart(item, userId);
       return ResponseEntity.ok(cart);
-    } catch (AuthorizationException e){
-      log.error("Authorization error: {} ", e.getLocalizedMessage(), e);
-      throw e;
-    } catch (Exception e) {
-      log.error("Exception occurs while reporting toppings by drink {}", e.getLocalizedMessage(), e);
-      throw new InternalServerException("Toppings by drink could not be reported: " + e.getLocalizedMessage());
-    }
   }
 
   @Operation(summary = "Checkout the cart.")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Cart checked out, total amount and discount amount returned.",
           content = {@Content(mediaType = "application/json",
-              schema = @Schema(implementation = Cart.class))}),
+              schema = @Schema(implementation = FinalizedCart.class))}),
       @ApiResponse(responseCode = "401", description = "Unauthorized or authentication and path variable are not the same.",
           content = @Content),
       @ApiResponse(responseCode = "404", description = "Customer not found.",
@@ -98,21 +84,11 @@ public class ShoppingCartRestController {
           content = @Content)
   })
   @PutMapping("/{userId}/cart/checkout")
-  public ResponseEntity<FinalizedCart> checkoutShoppingCart(final Principal principal, @PathVariable final Long userId) {
-    try {
-      checkAuthentication(principal, userId);
-      FinalizedCart finalizedCart = shoppingService.checkoutCart(userId);
-      return ResponseEntity.ok(finalizedCart);
-    } catch (AuthorizationException e){
-      log.error("Authorization error: {} ", e.getLocalizedMessage(), e);
-      throw e;
-    } catch (CustomerNotFoundException e){
-      log.error("Customer not found with id {}: {} ", userId, e.getLocalizedMessage(), e);
-      throw e;
-    } catch (Exception e) {
-      log.error("Exception occurs while reporting toppings by drink {}", e.getLocalizedMessage(), e);
-      throw new InternalServerException("Toppings by drink could not be reported: " + e.getLocalizedMessage());
-    }
+  public ResponseEntity<FinalizedCart> checkoutShoppingCart(final Principal principal,
+      @PathVariable @Positive(message = "User id is positive or zero") final Long userId) {
+    checkAuthentication(principal, userId);
+    FinalizedCart finalizedCart = shoppingService.checkoutCart(userId);
+    return ResponseEntity.ok(finalizedCart);
   }
 
   private void checkAuthentication(final Principal principal, final Long userId) {

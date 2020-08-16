@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.Cart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.FinalizedCart;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Item;
 import tr.com.yigithanbalci.shoppingcartservice.dto.ItemInput;
-import tr.com.yigithanbalci.shoppingcartservice.exception.CustomerNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.Customer;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkToppingRelation;
 import tr.com.yigithanbalci.shoppingcartservice.repository.CartRepository;
@@ -60,7 +60,7 @@ public class ShoppingServiceImpl implements ShoppingService {
     cartRepository.deleteByUserId(userId);
     updateDrinkToppingRelation(cart);
     Customer customer = customerRepository.findById(userId)
-        .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + userId));
+        .orElseThrow(() -> new EntityNotFoundException("Customer not found with id: " + userId));
     customer.setTotalAmountOfOrders(customer.getTotalAmountOfOrders().add(BigDecimal.ONE));
     customerRepository.save(customer);
     log.debug("Finished to checkout cart of user with id: " + userId);

@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import javax.validation.Valid;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +22,6 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.dto.DrinkInput;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
 import tr.com.yigithanbalci.shoppingcartservice.dto.ToppingInput;
-import tr.com.yigithanbalci.shoppingcartservice.exception.DrinkNotFoundException;
-import tr.com.yigithanbalci.shoppingcartservice.exception.InternalServerException;
-import tr.com.yigithanbalci.shoppingcartservice.exception.ToppingNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
 import tr.com.yigithanbalci.shoppingcartservice.service.DrinkService;
@@ -50,13 +47,8 @@ public class ProductsAdminRestController {
   })
   @PostMapping("/drinks")
   public ResponseEntity<Drink> createDrink(@Valid @RequestBody final DrinkInput drink) {
-    try {
       Drink createdDrink = drinkService.create(drink);
       return ResponseEntity.ok(createdDrink);
-    } catch (Exception e) {
-      log.error("Exception occurs while creating drink {} : {}", drink, e.getLocalizedMessage(), e);
-      throw new InternalServerException("Drink could not be created: " + e.getLocalizedMessage());
-    }
   }
 
   @Operation(summary = "Create a topping.")
@@ -70,14 +62,8 @@ public class ProductsAdminRestController {
   @PostMapping("/toppings")
   public ResponseEntity<Topping> createTopping(
       @Valid @RequestBody final ToppingInput topping) {
-    try {
       Topping createdTopping = toppingService.create(topping);
       return ResponseEntity.ok(createdTopping);
-    } catch (Exception e) {
-      log.error("Exception occurs while creating topping {} : {}", topping, e.getLocalizedMessage(),
-          e);
-      throw new InternalServerException("Topping could not be created: " + e.getLocalizedMessage());
-    }
   }
 
   @Operation(summary = "Update a drink.")
@@ -92,18 +78,10 @@ public class ProductsAdminRestController {
   })
   @PutMapping("/drinks/{drinkId}")
   public ResponseEntity<Drink> updateDrink(@Valid @RequestBody final DrinkInput drink,
-      @PathVariable final Long drinkId) {
-    try {
-      Drink updatedDrink = drinkService
-          .update(Drink.createWithIdAndNameAndPrice(drinkId, drink.getName(), drink.getAmount()));
-      return ResponseEntity.ok(updatedDrink);
-    } catch (DrinkNotFoundException e) {
-      log.error("Drink not found with Id: " + drinkId);
-      throw e;
-    } catch (Exception e) {
-      log.error("Exception occurs while updating drink {} : {}", drink, e.getLocalizedMessage(), e);
-      throw new InternalServerException("Drink could not be updated: " + e.getLocalizedMessage());
-    }
+      @PathVariable @Positive(message = "Drink id is positive") final Long drinkId) {
+    Drink updatedDrink = drinkService
+        .update(Drink.createWithIdAndNameAndPrice(drinkId, drink.getName(), drink.getAmount()));
+    return ResponseEntity.ok(updatedDrink);
   }
 
   @Operation(summary = "Update a topping.")
@@ -118,19 +96,10 @@ public class ProductsAdminRestController {
   })
   @PutMapping("/toppings/{toppingId}")
   public ResponseEntity<Topping> updateTopping(@Valid @RequestBody final ToppingInput topping,
-      @PathVariable final Long toppingId) {
-    try {
-      Topping updatedTopping = toppingService.update(
-          Topping.createWithIdAndNameAndPrice(toppingId, topping.getName(), topping.getAmount()));
-      return ResponseEntity.ok(updatedTopping);
-    } catch (ToppingNotFoundException e) {
-      log.error("Topping not found with Id: " + toppingId);
-      throw e;
-    } catch (Exception e) {
-      log.error("Exception occurs while updating topping {} : {}", topping, e.getLocalizedMessage(),
-          e);
-      throw new InternalServerException("Topping could not be updated: " + e.getLocalizedMessage());
-    }
+      @PathVariable @Positive(message = "Drink id is positive") final Long toppingId) {
+    Topping updatedTopping = toppingService.update(
+        Topping.createWithIdAndNameAndPrice(toppingId, topping.getName(), topping.getAmount()));
+    return ResponseEntity.ok(updatedTopping);
   }
 
   @Operation(summary = "Delete a drink.")
@@ -142,15 +111,10 @@ public class ProductsAdminRestController {
   })
   @DeleteMapping("/drinks/{drinkId}")
   public ResponseEntity<Void> deleteDrink(
-      @PathVariable @PositiveOrZero(message = "Drink id is positive or zero") final Long drinkId) {
-    try {
-      drinkService.delete(drinkId);
-    } catch (Exception e) {
-      log.error("Exception occurs while deleting drink {} : {}", drinkId, e.getLocalizedMessage(),
-          e);
-      throw new InternalServerException("Drink could not be deleted: " + e.getLocalizedMessage());
-    }
+      @PathVariable @Positive(message = "Drink id is positive or zero") final Long drinkId) {
+    drinkService.delete(drinkId);
     return ResponseEntity.ok().build();
+
   }
 
   @Operation(summary = "Delete a topping.")
@@ -162,14 +126,8 @@ public class ProductsAdminRestController {
   })
   @DeleteMapping("/toppings/{toppingId}")
   public ResponseEntity<Void> deleteTopping(
-      @PathVariable @PositiveOrZero(message = "Topping id is positive or zero") final Long toppingId) {
-    try {
+      @PathVariable @Positive(message = "Topping id is positive or zero") final Long toppingId) {
       toppingService.delete(toppingId);
-    } catch (Exception e) {
-      log.error("Exception occurs while deleting topping {} : {}", toppingId,
-          e.getLocalizedMessage(), e);
-      throw new InternalServerException("Topping could not be deleted: " + e.getLocalizedMessage());
-    }
     return ResponseEntity.ok().build();
   }
 }

@@ -74,20 +74,4 @@ public class ReportsRestControllerTests {
         .andExpect(jsonPath("$[0].drink", is(tea.getDrink())))
         .andExpect(jsonPath("$[0].mostUsedTopping", is(tea.getMostUsedTopping())));
   }
-
-  @Test
-  public void whenException_thenInternalServerError() throws Exception {
-    given(service.getCustomerAnalysisReport()).willThrow(new RuntimeException("test"));
-    given(service.getDrinkAnalysisReport()).willThrow(new RuntimeException("test"));
-
-    mockMvc.perform(
-        MockMvcRequestBuilders.get("/admin/reports/users/total-orders")
-            .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isInternalServerError());
-
-    mockMvc.perform(
-        MockMvcRequestBuilders.get("/admin/reports/drinks/most-used-topping")
-            .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isInternalServerError());
-  }
 }

@@ -1,14 +1,15 @@
 package tr.com.yigithanbalci.shoppingcartservice.service;
 
 import java.util.List;
+import lombok.NonNull;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.dto.DrinkInput;
 
 public interface DrinkService {
 
-  Drink create(DrinkInput drinkInput);
-  Drink update(Drink drink);
-  void delete(Long id);
-  Drink findById(Long id);
+  Drink create(@NonNull final DrinkInput drinkInput);
+  Drink update(@NonNull final Drink drink);
+  void delete(@NonNull final Long id);
+  Drink findById(@NonNull final Long id);
   List<Drink> findAll();
 }

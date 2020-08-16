@@ -1,8 +1,8 @@
 package tr.com.yigithanbalci.shoppingcartservice.unit.web;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.math.BigDecimal;
+import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,8 +25,6 @@ import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.dto.DrinkInput;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
 import tr.com.yigithanbalci.shoppingcartservice.dto.ToppingInput;
-import tr.com.yigithanbalci.shoppingcartservice.exception.DrinkNotFoundException;
-import tr.com.yigithanbalci.shoppingcartservice.exception.ToppingNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.service.DrinkService;
 import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
 import tr.com.yigithanbalci.shoppingcartservice.web.ProductsAdminRestController;
@@ -129,75 +128,6 @@ public class ProductsAdminRestControllerTests {
   }
 
   @Test
-  public void whenExceptionInDrinks_thenInternalServerError() throws Exception {
-    Drink blackCoffee = Drink
-        .createWithIdAndNameAndPrice(1L, "Black Coffee", BigDecimal.valueOf(4.0));
-    DrinkInput blackCoffeeToCreate = new DrinkInput("Black Coffee", BigDecimal.valueOf(4.0));
-    Drink updatedBlackCoffee = Drink
-        .createWithIdAndNameAndPrice(1L, "Black Coffee", BigDecimal.valueOf(5.0));
-    DrinkInput updatedBlackCoffeeInput = new DrinkInput("Black Coffee", BigDecimal.valueOf(5.0));
-
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-    ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-
-    given(drinkService.create(new DrinkInput(blackCoffee.getName(), blackCoffee.getAmount())))
-        .willThrow(new RuntimeException("test"));
-    given(drinkService.update(updatedBlackCoffee)).willThrow(new RuntimeException("test"));
-    doThrow(new RuntimeException("test")).when(drinkService).delete(1L);
-
-    String requestJson = ow.writeValueAsString(blackCoffeeToCreate);
-    mockMvc.perform(
-        MockMvcRequestBuilders.post("/admin/products/drinks")
-            .contentType(MediaType.APPLICATION_JSON).content(requestJson))
-        .andExpect(status().isInternalServerError());
-
-    requestJson = ow.writeValueAsString(updatedBlackCoffeeInput);
-    mockMvc.perform(
-        MockMvcRequestBuilders.put("/admin/products/drinks/1")
-            .contentType(MediaType.APPLICATION_JSON).content(requestJson))
-        .andExpect(status().isInternalServerError());
-
-    mockMvc.perform(
-        MockMvcRequestBuilders.delete("/admin/products/drinks/1")
-            .contentType(MediaType.APPLICATION_JSON).content(requestJson))
-        .andExpect(status().isInternalServerError());
-  }
-
-  @Test
-  public void whenExceptionInToppings_thenInternalServerError() throws Exception {
-    Topping milk = Topping.createWithIdAndNameAndPrice(1L, "Milk", BigDecimal.valueOf(2.0));
-    Topping updatedMilk = Topping.createWithIdAndNameAndPrice(1L, "Milk", BigDecimal.valueOf(3.0));
-
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-    ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-
-    given(toppingService.create(new ToppingInput(milk.getName(), milk.getAmount())))
-        .willThrow(new RuntimeException("test"));
-    given(toppingService.update(updatedMilk))
-        .willThrow(new RuntimeException("test"));
-    doThrow(new RuntimeException("test")).when(toppingService).delete(1L);
-
-    String requestJson = ow.writeValueAsString(milk);
-    mockMvc.perform(
-        MockMvcRequestBuilders.post("/admin/products/toppings")
-            .contentType(MediaType.APPLICATION_JSON).content(requestJson))
-        .andExpect(status().isInternalServerError());
-
-    requestJson = ow.writeValueAsString(updatedMilk);
-    mockMvc.perform(
-        MockMvcRequestBuilders.put("/admin/products/toppings/1")
-            .contentType(MediaType.APPLICATION_JSON).content(requestJson))
-        .andExpect(status().isInternalServerError());
-
-    mockMvc.perform(
-        MockMvcRequestBuilders.delete("/admin/products/toppings/1")
-            .contentType(MediaType.APPLICATION_JSON).content(requestJson))
-        .andExpect(status().isInternalServerError());
-  }
-
-  @Test
   public void whenDrinkNotFound_thenNotFound() throws Exception {
     Drink updatedBlackCoffee = Drink
         .createWithIdAndNameAndPrice(1L, "Black Coffee", BigDecimal.valueOf(5.0));
@@ -208,13 +138,14 @@ public class ProductsAdminRestControllerTests {
     ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
     given(drinkService.update(updatedBlackCoffee))
-        .willThrow(new DrinkNotFoundException("test"));
+        .willThrow(new EntityNotFoundException("test"));
 
     String requestJson = ow.writeValueAsString(updatedBlackCoffeeInput);
-    mockMvc.perform(
+
+    assertThatThrownBy(() -> mockMvc.perform(
         MockMvcRequestBuilders.put("/admin/products/drinks/1")
-            .contentType(MediaType.APPLICATION_JSON).content(requestJson))
-        .andExpect(status().isNotFound());
+            .contentType(MediaType.APPLICATION_JSON).content(requestJson)))
+        .hasCause(new EntityNotFoundException("test"));
   }
 
   @Test
@@ -226,12 +157,12 @@ public class ProductsAdminRestControllerTests {
     ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
     given(toppingService.update(updatedMilk))
-        .willThrow(new ToppingNotFoundException("test"));
+        .willThrow(new EntityNotFoundException("test"));
 
     String requestJson = ow.writeValueAsString(updatedMilk);
-    mockMvc.perform(
+    assertThatThrownBy(() -> mockMvc.perform(
         MockMvcRequestBuilders.put("/admin/products/toppings/1")
-            .contentType(MediaType.APPLICATION_JSON).content(requestJson))
-        .andExpect(status().isNotFound());
+            .contentType(MediaType.APPLICATION_JSON).content(requestJson)))
+        .hasCause(new EntityNotFoundException("test"));
   }
 }

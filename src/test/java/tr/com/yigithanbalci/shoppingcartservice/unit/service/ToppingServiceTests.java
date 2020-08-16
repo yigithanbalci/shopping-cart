@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
 import tr.com.yigithanbalci.shoppingcartservice.dto.ToppingInput;
-import tr.com.yigithanbalci.shoppingcartservice.exception.ToppingNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
 import tr.com.yigithanbalci.shoppingcartservice.repository.ToppingRepository;
 import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
@@ -36,9 +36,9 @@ public class ToppingServiceTests {
 
   @Test
   public void whenNotFound_thenExceptionShouldBeThrown() {
-    Mockito.when(toppingRepository.findAll()).thenReturn(new ArrayList<>());
-    assertThatExceptionOfType(ToppingNotFoundException.class)
-        .isThrownBy(() -> toppingService.findAll());
+    Mockito.when(toppingRepository.findById(1L)).thenReturn(Optional.empty());
+    assertThatExceptionOfType(EntityNotFoundException.class)
+        .isThrownBy(() -> toppingService.findById(1L));
   }
 
   @Test

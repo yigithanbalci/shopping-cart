@@ -2,13 +2,13 @@ package tr.com.yigithanbalci.shoppingcartservice.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Topping;
 import tr.com.yigithanbalci.shoppingcartservice.dto.ToppingInput;
-import tr.com.yigithanbalci.shoppingcartservice.exception.ToppingNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.ToppingEntity;
 import tr.com.yigithanbalci.shoppingcartservice.repository.ToppingRepository;
 import tr.com.yigithanbalci.shoppingcartservice.service.ToppingService;
@@ -35,7 +35,7 @@ public class ToppingServiceImpl implements ToppingService {
   public Topping update(Topping topping) {
     log.debug("Updating a topping: " + topping.getName());
     ToppingEntity updatedTopping = repository.findById(topping.getId())
-        .orElseThrow(() -> new ToppingNotFoundException(
+        .orElseThrow(() -> new EntityNotFoundException(
             "Topping not found with id: " + topping.getId()));
     updatedTopping.setName(topping.getName());
     updatedTopping.setAmount(topping.getAmount());
@@ -55,16 +55,13 @@ public class ToppingServiceImpl implements ToppingService {
   @Override
   public Topping findById(Long id) {
     return Topping.from(repository.findById(id)
-        .orElseThrow(() -> new ToppingNotFoundException("Drink not found with id: " + id)));
+        .orElseThrow(() -> new EntityNotFoundException("Drink not found with id: " + id)));
   }
 
   @Override
   public List<Topping> findAll() {
     log.debug("Retrieving all topping");
     List<ToppingEntity> all = repository.findAll();
-    if (all.isEmpty()) {
-      throw new ToppingNotFoundException("Not found any toppings in database.");
-    }
     log.debug("Retrieved all topping");
     return all.stream().map(Topping::from).collect(Collectors.toList());
   }

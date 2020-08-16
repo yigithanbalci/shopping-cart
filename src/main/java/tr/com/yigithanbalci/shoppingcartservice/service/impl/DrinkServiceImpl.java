@@ -2,13 +2,13 @@ package tr.com.yigithanbalci.shoppingcartservice.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import tr.com.yigithanbalci.shoppingcartservice.dto.Drink;
 import tr.com.yigithanbalci.shoppingcartservice.dto.DrinkInput;
-import tr.com.yigithanbalci.shoppingcartservice.exception.DrinkNotFoundException;
 import tr.com.yigithanbalci.shoppingcartservice.model.DrinkEntity;
 import tr.com.yigithanbalci.shoppingcartservice.repository.DrinkRepository;
 import tr.com.yigithanbalci.shoppingcartservice.service.DrinkService;
@@ -36,7 +36,7 @@ public class DrinkServiceImpl implements DrinkService {
     log.debug("Updating a drink: " + drink.getName());
     DrinkEntity retrievedDrink = repository.findById(drink.getId())
         .orElseThrow(
-            () -> new DrinkNotFoundException("Drink not found with id: " + drink.getId()));
+            () -> new EntityNotFoundException("Drink not found with id: " + drink.getId()));
     retrievedDrink.setName(drink.getName());
     retrievedDrink.setAmount(drink.getAmount());
     DrinkEntity updatedDrink = repository.save(retrievedDrink);
@@ -55,16 +55,13 @@ public class DrinkServiceImpl implements DrinkService {
   @Override
   public Drink findById(Long id) {
     return Drink.from(repository.findById(id)
-        .orElseThrow(() -> new DrinkNotFoundException("Drink not found with id: " + id)));
+        .orElseThrow(() -> new EntityNotFoundException("Drink not found with id: " + id)));
   }
 
   @Override
   public List<Drink> findAll() {
     log.debug("Retrieving all drinks");
     List<DrinkEntity> all = repository.findAll();
-    if (all.isEmpty()) {
-      throw new DrinkNotFoundException("Not found any drinks in database.");
-    }
     log.debug("Retrieved all drink");
     return all.stream().map(Drink::from).collect(Collectors.toList());
   }

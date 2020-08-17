@@ -117,5 +117,10 @@ curl -u user1:user1 -X PUT "http://localhost:8080/users/1/cart/checkout" -H "acc
 ```
 
 ### Note
-Coverage is included dev, config and dto classes.
-Usage is may be out-dated check swagger-ui to be sure.
+```
+Coverage not included dev, config and dto classes.
+Documentatıon might be out-dated check swagger-ui to be sure.
+Needs some refactor especially in cleanness of tests.
+Feel free to contribute!
+
+```

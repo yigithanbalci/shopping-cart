@@ -115,3 +115,7 @@ PUT CART (CHECKOUT CART)
 curl -u user1:user1 -X PUT "http://localhost:8080/users/1/cart/checkout" -H "accept: application/json"
 
 ```
+
+### Note
+Coverage is included dev, config and dto classes.
+Usage is may be out-dated check swagger-ui to be sure.

@@ -17,7 +17,7 @@ mvn spring-boot run
 http://localhost:8080/swagger-ui.html
 ```
 
-## AWS Deployment with ECS, ECR and EC2 loadbalancer
+## AWS Deployment with ECS (Fargate), ECR and EC2 loadbalancer
 ```
 terraform init
 terraform apply
